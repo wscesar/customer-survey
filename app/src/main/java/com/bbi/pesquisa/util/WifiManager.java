@@ -7,12 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.embarcadero.javaandroid.ConnectionFactory;
 import com.bbi.pesquisa.model.NetworkConfiguration;
+import com.embarcadero.javaandroid.ConnectionFactory;
 import com.embarcadero.javaandroid.DSProxy;
 import com.embarcadero.javaandroid.DSRESTConnection;
 
-public class NetworkManager extends SQLiteOpenHelper {
+public class WifiManager extends SQLiteOpenHelper {
     public static DSProxy.TSvrMethod method;
 
     private static final int VERSION = 2;
@@ -25,7 +25,7 @@ public class NetworkManager extends SQLiteOpenHelper {
     private static final String COL_PORT = "port";
     private static final String COL_PASS = "password";
 
-    public NetworkManager(Context context) {
+    public WifiManager(Context context) {
         super(context, DBNAME, null, VERSION);
     }
 
@@ -50,7 +50,7 @@ public class NetworkManager extends SQLiteOpenHelper {
     }
 
 
-    public void insertConfiguration(String ip, int port, String ssid, String pass)
+    public void insertConfiguration(String ip, int port)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -58,21 +58,29 @@ public class NetworkManager extends SQLiteOpenHelper {
         values.put(COL_ID, 1);
         values.put(COL_IP, ip);
         values.put(COL_PORT, port);
-        values.put(COL_SSID, ssid);
-        values.put(COL_PASS, pass);
 
         db.insert(TABLE, null, values);
     }
 
-    public void updateConfiguration(String ip, int port, String ssid, String pass)
+    public void saveWifi(String ip, int port)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COL_ID, 1);
+        values.put(COL_IP, ip);
+        values.put(COL_PORT, port);
+
+        db.insert(TABLE, null, values);
+    }
+
+    public void updateConfiguration(String ip, int port)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put( COL_IP, ip );
         values.put( COL_PORT, port );
-        values.put(COL_SSID, ssid);
-        values.put(COL_PASS, pass);
 
         String[] args = {String.valueOf(1)};
 
@@ -87,7 +95,7 @@ public class NetworkManager extends SQLiteOpenHelper {
     {
         String[] id = new String[]{String.valueOf(1)};
         SQLiteDatabase db = this.getReadableDatabase();
-        String[] columns = new String[]{COL_ID, COL_IP, COL_PORT, COL_SSID, COL_PASS};
+        String[] columns = new String[]{COL_ID, COL_IP, COL_PORT, COL_SSID};
 
         Cursor cursor = db.query(TABLE, columns, COL_ID + "=?", id,
                                 null, null, null, null);
@@ -100,7 +108,6 @@ public class NetworkManager extends SQLiteOpenHelper {
             network.setIp(cursor.getString(cursor.getColumnIndex(COL_IP)));
             network.setPort(cursor.getInt(cursor.getColumnIndex(COL_PORT)));
             network.setSsid(cursor.getString(cursor.getColumnIndex(COL_SSID)));
-            network.setPass(cursor.getString(cursor.getColumnIndex(COL_PASS)));
         }
 
         connect(network.getIp(), network.getPort());

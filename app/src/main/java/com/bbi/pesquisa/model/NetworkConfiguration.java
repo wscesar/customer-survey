@@ -2,7 +2,7 @@ package com.bbi.pesquisa.model;
 
 public class NetworkConfiguration {
     private int id, port;
-    private String ip, ssid;
+    private String ip, ssid, pass;
 
     public int getId() {
         return id;
@@ -34,5 +34,13 @@ public class NetworkConfiguration {
 
     public void setSsid(String ssid) {
         this.ssid = ssid;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
     }
 }

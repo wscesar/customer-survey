@@ -40,9 +40,10 @@
 
         <EditText
             android:hint="Senha"
-            android:id="@+id/senha"
-            android:inputType="textPassword"
+            android:id="@+id/pass"
+
             style="@style/modalText" />
+        <!--android:inputType="textPassword"-->
 
     </com.google.android.material.textfield.TextInputLayout>
 

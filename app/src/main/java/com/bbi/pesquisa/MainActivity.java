@@ -1,5 +1,6 @@
 package com.bbi.pesquisa;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -10,11 +11,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bbi.pesquisa.fragments.LastFragment;
 import com.bbi.pesquisa.model.NetworkConfiguration;
@@ -45,7 +46,12 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView logo;
 
-    private EditText inputOrderId, inputIp, inputPort, authPassword ;
+//    private EditText inputOrderId, inputIp, inputPort, inputSsid, authPassword ;
+    EditText inputIp  ;
+    EditText inputPort;
+    EditText inputSsid;
+    EditText inputPass;
+    private EditText inputOrderId, authPassword ;
 
     private LinearLayout modal, authForm, configForm, orderForm;
 
@@ -109,51 +115,38 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
+
+        // init global vars
+        logo        = findViewById(R.id.headerLogo);
+        modal       = findViewById(R.id.modal);
         layout      = findViewById(R.id.layout);
         message     = findViewById(R.id.message);
         progressBar = findViewById(R.id.progressBar);
 
-        // init global vars
-        logo = findViewById(R.id.headerLogo);
-
-        modal = findViewById(R.id.modal);
-        authForm =  findViewById(R.id.authForm);
-        orderForm =  findViewById(R.id.orderForm);
-        configForm = findViewById(R.id.configForm);
+        // init order form
+        orderForm    = findViewById(R.id.orderForm);
         inputOrderId = findViewById(R.id.orderId);
 
-
+        // init network configuration form
+        authForm   = findViewById(R.id.authForm);
+        configForm = findViewById(R.id.configForm);
+        inputIp    = findViewById(R.id.ip);
+        inputPort  = findViewById(R.id.port);
+        inputSsid  = findViewById(R.id.ssid);
+        inputPass  = findViewById(R.id.pass);
 
         inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         networkManager = new NetworkManager(this);
         network = networkManager.getConfiguration();
 
-        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        //ConnectivityManager.NetworkCallback w =  new ConnectivityManager.NetworkCallback();
-
-
-        String networkSSID = "test";
-        String networkPass = "pass";
-
-//        WifiConfiguration conf = new WifiConfiguration();
-//        conf.SSID = "\"" + networkSSID + "\"";   // Please note the quotes. String should contain ssid in quotes
-//
-//
-//        if(wifi.isConnected()){
-//            TextView title = findViewById(R.id.headerTitle);
-//            title.setText("Wifi desconectado");
-//        }
-
         if ( network != null ) {
-            if ( network.getId() == 1 ) {
-                GetLogoService service = new GetLogoService();
-                service.start(getApplicationContext());
-            }
-            else {
+
+            if ( network.getId() == 1 )
+                getLogo();
+            else
                 showModal(configForm);
-            }
+
 
             modal.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -171,7 +164,6 @@ public class MainActivity extends AppCompatActivity {
 //                    return false;
 //                }
 //            });
-
 
 
             logo.setOnTouchListener(new View.OnTouchListener() {
@@ -222,7 +214,9 @@ public class MainActivity extends AppCompatActivity {
             configNetwork.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     saveNetwork();
+                    getLogo();
                     hideModal(view);
                 }
             });
@@ -234,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
                     EditText authPassword = findViewById(R.id.authPassword);
                     showFocusOn(authPassword);
 
-                    if(authPassword.getText().toString().trim().equals("bbifood")) {
+                    if(authPassword.getText().toString().trim().equals("")) {
                         showModal(configForm);
                     } else {
                         authPassword.setText("");
@@ -247,14 +241,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void getLogo() {
+        GetLogoService service = new GetLogoService();
+        service.start(getApplicationContext());
+    }
+
     private void displayNetworkConfig() {
         NetworkConfiguration config = networkManager.getConfiguration();
+//        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//        WifiInfo wifi = wifiManager.getConnectionInfo();
+////        if (wifi.getSupplicantState() == SupplicantState.COMPLETED)
+////            inputSsid.setText( wifi.getSSID() );
 
-        inputIp =  findViewById(R.id.ip);
-        inputPort =  findViewById(R.id.port);
+
 
         inputIp.setText( config.getIp() );
         inputPort.setText( config.getPort()+"" );
+        inputSsid.setText( config.getSsid() );
+        inputPass.setText( config.getPass() );
+
     }
 
     private void showFocusOn(EditText inputField) {
@@ -264,20 +269,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveNetwork() {
-        EditText inputIp =  findViewById(R.id.ip);
-        EditText inputPort =  findViewById(R.id.port);
 
-        String ip = inputIp.getText().toString().trim();
+        String ip   = inputIp.getText().toString().trim();
+        String ssid = inputSsid.getText().toString().trim();
+        String pass = inputPass.getText().toString().trim();
         int port = Integer.parseInt( inputPort.getText().toString().trim() );
 
-        //network = networkManager.getConfiguration();
+//        wifiConnect(ssid, pass);
+        wifiConnect(ssid, pass);
 
-        if ( network != null) {
-            if ( network.getId() == 1 )
-                networkManager.updateConfiguration(ip, port);
-            else
-                networkManager.insertConfiguration(ip, port);
-        }
+//        // Cria um objeto com os dados da conexão wifi do aparelho
+//        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+//
+//        WifiInfo info = wm.getConnectionInfo();
+//        String ssid = info.getSSID();
+
+        if ( network != null && network.getId() == 1 )
+            networkManager.updateConfiguration(ip, port, ssid, pass);
+        else if ( network != null )
+            networkManager.insertConfiguration(ip, port, ssid, pass);
+
     }
 
     private void showModal(LinearLayout form) {
@@ -298,8 +309,6 @@ public class MainActivity extends AppCompatActivity {
         configForm.setVisibility(View.GONE);
     }
 
-
-
     private void hideKeyboard(View view) {
         inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
@@ -313,10 +322,51 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void hideProgressBar() {
-        layout.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
+
+    private void wifiConnect(String networkSSID, String networkPass)
+    {
+        /* Cria um objeto com os dados da conexão wifi do aparelho */
+        WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        wm.setWifiEnabled(true);
+
+        /* Cria configuração do Wireless */
+        WifiConfiguration wifiConfig = new WifiConfiguration();
+        wifiConfig.SSID = "\"".concat(networkSSID).concat("\"");
+        wifiConfig.status = WifiConfiguration.Status.DISABLED;
+        wifiConfig.priority = 40;
+
+        /* WPA/WPA2 Security */
+        wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+        wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+        wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+        wifiConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+        wifiConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+        wifiConfig.preSharedKey = "\"".concat(networkPass).concat("\"");
+
+        /* Adiciona a rede Wireless */
+        int networkID = wm.addNetwork(wifiConfig);
+
+        /* Conecta a rede Wireless, caso falhe, exibe uma mensagem de erro. */
+        if(!wm.enableNetwork(networkID, true))
+        {
+            Toast.makeText(getApplicationContext(), "Erro ao conectar", Toast.LENGTH_SHORT).show();
+        }else{
+            getLogo();
+//            Toast.makeText(getApplicationContext(), "Conectando...", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Conectando")
+                    .setMessage("Conectando na rede: " + networkSSID + ".")
+                    .setNeutralButton("OK", null)
+                    .show();
+        }
+
     }
+
+
 
 
 
