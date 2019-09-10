@@ -127,8 +127,6 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">70dp</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:layout_marginLeft">32dp</item>
-        <item name="android:layout_marginRight">32dp</item>
         <item name="android:paddingLeft">32dp</item>
         <item name="android:paddingRight">32dp</item>
         <item name="android:textColor">@color/white</item>
@@ -151,16 +149,21 @@
 
     <style name="shortButton" parent="formButton">
         <item name="android:layout_width">120dp</item>
+        <item name="android:layout_margin">32dp</item>
     </style>
 
     <style name="yesButton" parent="shortButton">
         <item name="android:text">SIM</item>
         <item name="android:background">@color/green</item>
+
+
+
     </style>
 
     <style name="noButton" parent="shortButton">
         <item name="android:text">NÂO</item>
         <item name="android:background">@color/red</item>
+
     </style>
 
     <style name="formSlash">
@@ -171,12 +174,12 @@
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="errorLayout">
-        <item name="android:visibility">gone</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">vertical</item>
-    </style>
+    <!--<style name="errorLayout">-->
+        <!--<item name="android:visibility">gone</item>-->
+        <!--<item name="android:layout_width">match_parent</item>-->
+        <!--<item name="android:layout_height">wrap_content</item>-->
+        <!--<item name="android:orientation">vertical</item>-->
+    <!--</style>-->
 
     <style name="message">
         <item name="android:gravity">center</item>
