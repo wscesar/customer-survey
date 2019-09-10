@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Pesquisa de Satisfação</string>
+    <string name="bbi_phone">(11) 3963-5055</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="welcome">Sua opinião é muito importante. Tem um minuto para avaliar nosso estabelecimento?</string>
+    <string name="acceptSurvey">Gostaria de deixar uma observação por escrito?</string>
+    <string name="alert">OOOPS!!!\n\nPra receber seu brinde é necessario preencher todos os campos\nGostaria de terminar seu cadastro?</string>
+    <string name="hasToast">Reservamos um brinde para quem completar as informações de cadastro\n\nDeseja receber seu brinde?</string>
+    <string name="noToast">Gostaria de cadastrar-se para receber nossas promocoes?</string>
+</resources>

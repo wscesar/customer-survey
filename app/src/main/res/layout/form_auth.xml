@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/authForm"
+    style="@style/modalFormLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <com.google.android.material.textfield.TextInputLayout style="@style/matchParent">
+        <EditText
+            style="@style/modalText"
+            android:inputType="textPassword"
+            android:hint="Senha de acesso"
+            android:id="@+id/authPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/authButton"
+        style="@style/modalButton" />
+
+</LinearLayout>

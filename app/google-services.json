@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "577610162860",
+    "firebase_url": "https://bbi-pesquisa-satisfacao.firebaseio.com",
+    "project_id": "bbi-pesquisa-satisfacao",
+    "storage_bucket": "bbi-pesquisa-satisfacao.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:577610162860:android:5b3ef83c1458a276",
+        "android_client_info": {
+          "package_name": "com.bbi.pesquisa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "577610162860-0k4s4s0dfqh74jtdtmua14c5sn85aook.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bbi.pesquisa",
+            "certificate_hash": "56e2315a2a4a291daa61057bf613c5d52a98ae8e"
+          }
+        },
+        {
+          "client_id": "577610162860-0bo0fosikfjpso4moht2652lmqmft6to.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZoOaUZjCoJtf8AEypaomOZ9VN8FlgF94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "577610162860-0bo0fosikfjpso4moht2652lmqmft6to.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

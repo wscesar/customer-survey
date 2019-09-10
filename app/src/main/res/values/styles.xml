@@ -1,0 +1,145 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+
+    <style name="matchParent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="modalFormLayout">
+        <item name="android:visibility">gone</item>
+        <item name="android:padding">32dp</item>
+        <item name="android:background">#fff</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">450dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+
+    <style name="formRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">32dp</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="formTextView">
+        <item name="android:layout_width">140dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="formInputText">
+        <!--<item name="android:paddingHorizontal">8dp</item>-->
+        <item name="android:inputType">textEmailAddress</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLength">100</item>
+    </style>
+
+    <style name="formInputPhone" parent="formInputText">
+        <item name="android:inputType">phone</item>
+    </style>
+
+    <style name="formInputNumber" parent="formInputText">
+        <item name="android:inputType">number</item>
+    </style>
+
+    <style name="formInputShortNumber" parent="formInputNumber">
+
+        <item name="android:background">@drawable/textlines</item>
+        <!--<item name="android:paddingBottom">16dp</item>-->
+        <item name="android:padding">8dp</item>
+        <item name="android:textColor">#000</item>
+        <item name="android:layout_width">66dp</item>
+        <item name="android:maxLength">2</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="formButton">
+        <item name="android:background">@color/blue</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">70dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_margin">32dp</item>
+        <item name="android:paddingLeft">32dp</item>
+        <item name="android:paddingRight">32dp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="modalButton" parent="formButton">
+        <item name="android:text">Confirmar</item>
+        <item name="android:background">@color/yellow</item>
+    </style>
+
+    <style name="modalText" >
+        <item name="android:textSize">22sp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="shortButton" parent="formButton">
+        <item name="android:layout_width">120dp</item>
+    </style>
+
+    <style name="yesButton" parent="shortButton">
+        <item name="android:text">SIM</item>
+        <item name="android:background">@color/green</item>
+    </style>
+
+    <style name="noButton" parent="shortButton">
+        <item name="android:text">NÂO</item>
+        <item name="android:background">@color/red</item>
+    </style>
+
+    <style name="formSlash">
+        <item name="android:text">/</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="errorLayout">
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="message">
+        <item name="android:padding">32dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+</resources>
