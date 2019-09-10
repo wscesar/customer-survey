@@ -32,7 +32,7 @@ public class LastFragment extends Fragment {
     {
         View v = inflater.inflate(R.layout.fragment_last, container, false);
 
-        TextView headerTitle = getActivity().findViewById(R.id.headerTitle);
+        TextView headerTitle = getActivity().findViewById(R.id.title);
         headerTitle.setText(R.string.app_name);
 
         Button button = v.findViewById(R.id.button);

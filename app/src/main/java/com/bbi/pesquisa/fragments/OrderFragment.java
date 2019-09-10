@@ -34,7 +34,7 @@ public class OrderFragment extends Fragment {
 
         inputOrderId = fragmentView.findViewById(R.id.orderId);
 
-        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
+//        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
 
         Button saveOrderId = fragmentView.findViewById(R.id.saveOrderId);
         saveOrderId.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +65,6 @@ public class OrderFragment extends Fragment {
     }
 
     private void getFragment(Fragment fragment) {
-
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace( R.id.frameLayout, fragment )

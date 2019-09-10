@@ -85,7 +85,7 @@ public class PersonalDataFragment extends Fragment {
         Bundle bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
 
-        TextView headerTitle = getActivity().findViewById(R.id.headerTitle);
+        TextView headerTitle = getActivity().findViewById(R.id.title);
         headerTitle.setText("Dados para cadastro");
 
         inputName  = fragmentView.findViewById(R.id.inputName);

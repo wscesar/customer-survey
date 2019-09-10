@@ -10,58 +10,32 @@
     <include layout="@layout/progress_bar" />
 
     <LinearLayout
+        style="@style/header"
         android:id="@+id/imagePlaceholder"
-        android:orientation="horizontal"
-        android:gravity="end"
-        android:paddingTop="16dp"
-        android:paddingRight="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/yellow"
-        >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/headerLogo"
-            android:layout_gravity="end"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            />
+            style="@style/logo"
+            android:id="@+id/logo" />
 
     </LinearLayout>
 
     <TextView
-        android:id="@+id/headerTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/yellow"
-        android:gravity="bottom"
-        android:paddingTop="0dp"
-        android:paddingRight="16dp"
-        android:paddingLeft="16dp"
-        android:paddingBottom="16dp"
-        android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/imagePlaceholder"  />
-
+        android:id="@+id/title"
+        style="@style/title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imagePlaceholder" />
 
     <FrameLayout
+        style="@style/frame"
         android:id="@+id/frameLayout"
-        android:background="@color/white"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingRight="32dp"
-        android:paddingLeft="32dp"
-        android:paddingTop="16dp"
-        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <LinearLayout
         android:id="@+id/footer"
@@ -74,8 +48,7 @@
 
         <ImageView
             android:id="@+id/logo_bbi"
-            android:layout_width="wrap_content"
-            android:layout_marginBottom="2dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:src="@drawable/logo_bbi" />
 

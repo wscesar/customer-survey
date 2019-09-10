@@ -40,7 +40,7 @@ public class AskForOpinionFragment extends Fragment {
     {
         View fragmentView = inflater.inflate(R.layout.fragment_prompt, container, false);
 
-        TextView headerTitle = getActivity().findViewById(R.id.headerTitle);
+        TextView headerTitle = getActivity().findViewById(R.id.title);
         headerTitle.setText(R.string.app_name);
 
         TextView message = fragmentView.findViewById(R.id.message);

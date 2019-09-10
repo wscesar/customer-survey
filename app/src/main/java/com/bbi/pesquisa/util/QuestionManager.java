@@ -2,7 +2,6 @@ package com.bbi.pesquisa.util;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.service.autofill.FieldClassification;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -34,7 +33,7 @@ public class QuestionManager extends AppCompatActivity {
         Question currentQuestion = questionList.get(position);
         List<Alternative> currentAlternatives = currentQuestion.getAlternativeList();
 
-        TextView headerTitle = activity.findViewById(R.id.headerTitle);
+        TextView headerTitle = activity.findViewById(R.id.title);
         headerTitle.setText( questionNumber + ") "+ currentQuestion.getQuestion() );
 
         final Button nextButton = activity.findViewById(R.id.nextButton);

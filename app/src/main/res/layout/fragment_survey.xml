@@ -14,7 +14,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:paddingBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/nextButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,9 +28,6 @@
                 android:id="@+id/rGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -46,17 +42,12 @@
 
 
     <Button
+        android:text="Próxima Pergunta"
         android:id="@+id/nextButton"
         android:visibility="invisible"
-        android:layout_width="wrap_content"
-        android:layout_height="70dp"
-        android:layout_marginBottom="32dp"
-        android:background="@color/blue"
-        android:paddingHorizontal="32dp"
-        android:text="Próxima Pergunta"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="22dp"
+        style="@style/formButton"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

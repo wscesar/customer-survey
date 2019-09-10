@@ -23,13 +23,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bbi.pesquisa.fragments.LastFragment;
 import com.bbi.pesquisa.fragments.OrderFragment;
 import com.bbi.pesquisa.model.NetworkConfiguration;
-import com.bbi.pesquisa.fragments.PromptFragment;
 import com.bbi.pesquisa.services.GetLogoService;
 import com.bbi.pesquisa.util.NetworkManager;
 
@@ -113,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // init global vars
-        logo        = findViewById(R.id.headerLogo);
+        logo        = findViewById(R.id.logo);
         modal       = findViewById(R.id.modal);
 //        layout      = findViewById(R.id.layout);
 //        message     = findViewById(R.id.message);
