@@ -2,31 +2,20 @@ package com.bbi.pesquisa.fragments;
 
 
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 //import android.app.Fragment;
 //import android.app.FragmentTransaction;
 
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.bbi.pesquisa.R;
-import com.bbi.pesquisa.model.NetworkConfiguration;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,7 +43,7 @@ public class LastFragment extends Fragment {
 //                System.exit(0);
                 getFragmentManager()
                         .beginTransaction()
-                        .replace( R.id.frameLayout, new FirstFragment() )
+                        .replace( R.id.frameLayout, new PromptFragment() )
                         .commit();
             }
         });

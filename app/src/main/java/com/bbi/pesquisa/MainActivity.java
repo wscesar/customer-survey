@@ -27,8 +27,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bbi.pesquisa.fragments.LastFragment;
+import com.bbi.pesquisa.fragments.OrderFragment;
 import com.bbi.pesquisa.model.NetworkConfiguration;
-import com.bbi.pesquisa.fragments.FirstFragment;
+import com.bbi.pesquisa.fragments.PromptFragment;
 import com.bbi.pesquisa.services.GetLogoService;
 import com.bbi.pesquisa.util.NetworkManager;
 
@@ -36,9 +37,9 @@ import com.bbi.pesquisa.util.NetworkManager;
 public class MainActivity extends AppCompatActivity {
     boolean isLongPress = false;
 
-    private TextView message;
-    private LinearLayout layout;
-    private ProgressBar progressBar;
+//    private TextView message;
+//    private LinearLayout layout;
+//    private ProgressBar progressBar;
 
     private NetworkManager networkManager;
 
@@ -46,12 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView logo;
 
-//    private EditText inputOrderId, inputIp, inputPort, inputSsid, authPassword ;
-    EditText inputIp  ;
-    EditText inputPort;
-    EditText inputSsid;
-    EditText inputPass;
-    private EditText inputOrderId, authPassword ;
+    private EditText inputOrderId, authPassword, inputIp, inputPort, inputSsid, inputPass;
 
     private LinearLayout modal, authForm, configForm, orderForm;
 
@@ -119,9 +115,9 @@ public class MainActivity extends AppCompatActivity {
         // init global vars
         logo        = findViewById(R.id.headerLogo);
         modal       = findViewById(R.id.modal);
-        layout      = findViewById(R.id.layout);
-        message     = findViewById(R.id.message);
-        progressBar = findViewById(R.id.progressBar);
+//        layout      = findViewById(R.id.layout);
+//        message     = findViewById(R.id.message);
+//        progressBar = findViewById(R.id.progressBar);
 
         // init order form
         orderForm    = findViewById(R.id.orderForm);
@@ -237,7 +233,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            getFragment( new FirstFragment() );
+            getFragment( new OrderFragment() );
+//            getFragment( new PromptFragment() );
         }
     }
 
@@ -248,18 +245,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayNetworkConfig() {
         NetworkConfiguration config = networkManager.getConfiguration();
-//        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-//        WifiInfo wifi = wifiManager.getConnectionInfo();
-////        if (wifi.getSupplicantState() == SupplicantState.COMPLETED)
-////            inputSsid.setText( wifi.getSSID() );
-
-
-
         inputIp.setText( config.getIp() );
         inputPort.setText( config.getPort()+"" );
         inputSsid.setText( config.getSsid() );
         inputPass.setText( config.getPass() );
-
     }
 
     private void showFocusOn(EditText inputField) {
@@ -275,14 +264,7 @@ public class MainActivity extends AppCompatActivity {
         String pass = inputPass.getText().toString().trim();
         int port = Integer.parseInt( inputPort.getText().toString().trim() );
 
-//        wifiConnect(ssid, pass);
         wifiConnect(ssid, pass);
-
-//        // Cria um objeto com os dados da conexão wifi do aparelho
-//        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-//
-//        WifiInfo info = wm.getConnectionInfo();
-//        String ssid = info.getSSID();
 
         if ( network != null && network.getId() == 1 )
             networkManager.updateConfiguration(ip, port, ssid, pass);

@@ -14,11 +14,12 @@ import android.widget.TextView;
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
 
-public class FirstFragment extends Fragment {
+public class PromptFragment extends Fragment {
     private Bundle bundle = new Bundle();
     private Answer answer = new Answer();
 
-//    private LinearLayout modal, configForm, orderForm;
+    private TextView message;
+
     private LinearLayout modal;
     private LinearLayout orderForm;
     private LinearLayout configForm;
@@ -27,14 +28,11 @@ public class FirstFragment extends Fragment {
 
     private InputMethodManager inputManager;
 
-
-    public FirstFragment() {
+    public PromptFragment() {
         // Required empty public constructor
     }
 
 
-
-    TextView message;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -43,10 +41,6 @@ public class FirstFragment extends Fragment {
 
         message = fragmentView.findViewById(R.id.message);
         message.setText(R.string.welcome);
-
-
-
-
 
         modal = getActivity().findViewById(R.id.modal);
         orderForm = getActivity().findViewById(R.id.orderForm);
