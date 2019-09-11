@@ -74,7 +74,7 @@ public class ToastFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        fragmentView = inflater.inflate(R.layout.fragment_prompt, container, false);
+        fragmentView = inflater.inflate(R.layout.fragment_message, container, false);
         message = fragmentView.findViewById(R.id.message);
 
         ParamService service = new ParamService();
@@ -83,10 +83,10 @@ public class ToastFragment extends Fragment {
         bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
 
-        layout      = fragmentView.findViewById(R.id.layout);
-        progressBar = getActivity().findViewById(R.id.progressBar);
+        layout      = fragmentView.findViewById(R.id.messageLayout);
+        progressBar = fragmentView.findViewById(R.id.progressBar);
 
-        showProgressBar();
+//        showProgressBar();
 
         TextView headerTitle = getActivity().findViewById(R.id.title);
         headerTitle.setText(R.string.app_name);
@@ -103,6 +103,7 @@ public class ToastFragment extends Fragment {
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showProgressBar();
                 saveData();
             }
         });

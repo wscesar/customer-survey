@@ -7,8 +7,9 @@
     android:layout_height="match_parent"
     tools:context=".fragments.PersonalDataFragment">
 
+    <include layout="@layout/progress_bar" />
+
     <ScrollView
-        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -17,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/form"
+            android:id="@+id/personalDataLayout"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,7 +31,6 @@
                     style="@style/formTextView" />
 
                 <EditText
-
                     android:id="@+id/inputName"
                     style="@style/formInputText" />
 
@@ -43,7 +43,6 @@
                     style="@style/formTextView" />
 
                 <EditText
-
                     android:id="@+id/inputPhone"
                     style="@style/formInputPhone" />
 
@@ -56,7 +55,6 @@
                     style="@style/formTextView" />
 
                 <EditText
-
                     android:id="@+id/inputEmail"
                     style="@style/formInputText" />
 
@@ -69,7 +67,6 @@
                     style="@style/formTextView" />
 
                 <EditText
-
                     android:id="@+id/inputCity"
                     style="@style/formInputText" />
 
@@ -101,7 +98,7 @@
 
             <Button
                 style="@style/formButton"
-                android:id="@+id/button"
+                android:id="@+id/savePersonalData"
                 android:background="@color/colorPrimary"
                 android:text="Cadastrar"
                 />

@@ -4,17 +4,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import androidx.fragment.app.Fragment;
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
+import com.bbi.pesquisa.util.InterfaceManager;
 
 public class CustomerOpinionFragment extends Fragment {
+    private InterfaceManager interfaceManager = new InterfaceManager();
     private EditText customerOpinionInput;
-
-    private InputMethodManager inputManager;
+    private View fragmentView;
 
     public CustomerOpinionFragment() {
         // Required empty public constructor
@@ -23,18 +27,21 @@ public class CustomerOpinionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        final View fragmentView = inflater.inflate(R.layout.fragment_curstomer_opinion, container, false);
+        fragmentView = inflater.inflate(R.layout.fragment_curstomer_opinion, container, false);
 
-        inputManager = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
+        TextView headerTitle = getActivity().findViewById(R.id.title);
+        headerTitle.setText(R.string.app_name);
+
         customerOpinionInput = fragmentView.findViewById(R.id.customerOpinionInput);
 
-        showFocusOn(customerOpinionInput);
+        interfaceManager.showFocusOn(getActivity(), getContext(), customerOpinionInput);
 
         Button saveCustomerOpinionButton = fragmentView.findViewById(R.id.saveCustomerOpinionButton);
         saveCustomerOpinionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+                interfaceManager.hideKeyboard(getActivity(), getContext(), view);
 
                 String customerOpinion = customerOpinionInput.getText().toString().trim();
 
@@ -42,10 +49,13 @@ public class CustomerOpinionFragment extends Fragment {
                 Answer answer = (Answer) bundle.getSerializable("answer");
                 answer.setCustomerOpinion(customerOpinion);
 
-//                Fragment fragment = new SurveyFragment();
                 Fragment fragment = new ToastFragment();
                 bundle.putSerializable("answer", answer);
                 fragment.setArguments(bundle);
+
+                LinearLayout layout= fragmentView.findViewById(R.id.customerOpinionLayout);
+                ProgressBar progressBar = fragmentView.findViewById(R.id.progressBar);
+                interfaceManager.showProgressBar(layout, progressBar);
 
                 getFragment(fragment);
 
@@ -55,18 +65,11 @@ public class CustomerOpinionFragment extends Fragment {
         return fragmentView;
     }
 
-    private void showFocusOn( EditText editText ) {
-        inputManager.showSoftInput(editText, 0);
-        editText.requestFocus();
-        inputManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-    }
-
     private void getFragment(Fragment fragment) {
-
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace( R.id.frameLayout, fragment )
                 .commit();
-
     }
+
 }

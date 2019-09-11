@@ -11,9 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+//import android.app.Fragment;
 
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
+import com.bbi.pesquisa.util.InterfaceManager;
 
 public class OrderFragment extends Fragment {
     private Bundle bundle = new Bundle();
@@ -62,6 +64,8 @@ public class OrderFragment extends Fragment {
         bundle.putSerializable("answer", answer);
         fragment.setArguments(bundle);
         getFragment(fragment);
+
+//        new InterfaceManager().getFragment(getActivity(), fragment);
     }
 
     private void getFragment(Fragment fragment) {

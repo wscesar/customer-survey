@@ -7,7 +7,10 @@
     android:layout_height="match_parent"
     tools:context=".fragments.CustomerOpinionFragment">
 
+    <include layout="@layout/progress_bar" />
+
     <LinearLayout
+        android:id="@+id/customerOpinionLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

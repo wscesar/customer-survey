@@ -14,21 +14,20 @@ import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.bbi.pesquisa.services.GetQuestionsService;
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Alternative;
 import com.bbi.pesquisa.model.Answer;
 import com.bbi.pesquisa.model.Question;
+import com.bbi.pesquisa.util.InterfaceManager;
 import com.bbi.pesquisa.util.QuestionManager;
 
 import java.util.ArrayList;
@@ -44,6 +43,7 @@ public class SurveyFragment extends Fragment {
 
     private Button nextButton;
     private RadioGroup rGroup;
+    private LinearLayout layout;
 
     private int position = 0;
     private int total;
@@ -55,6 +55,10 @@ public class SurveyFragment extends Fragment {
 
     private boolean mountQuestionList = true;
 
+    public SurveyFragment() {
+        // Required empty public constructor
+    }
+
     private BroadcastReceiver questionReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -63,33 +67,20 @@ public class SurveyFragment extends Fragment {
 
             total = questionList.size();
 
-            if ( questionList != null && questionList.size() > 0 && mountQuestionList)
+            if ( questionList.size() > 0 && mountQuestionList)
             {
                 questionManager.showQuestion(0, questionList, getActivity());
-                progressBar.setVisibility(View.INVISIBLE);
-                rGroup.setVisibility(View.VISIBLE);
+                new InterfaceManager().hideProgressBar(layout, progressBar);
 
                 mountQuestionList = false;
             }
         }
     };
 
-
-    public SurveyFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         fragmentView = inflater.inflate(R.layout.fragment_survey, container, false);
-
-
-        ScrollView scrollView = fragmentView.findViewById(R.id.scrollView);
-        scrollView.setScrollbarFadingEnabled(false);
-
-//        scrollView.setBackgroundColor(R.color.colorAccent);
 
         if ( mountQuestionList ) {
             LocalBroadcastManager
@@ -97,10 +88,11 @@ public class SurveyFragment extends Fragment {
                     .registerReceiver(questionReceiver, new IntentFilter("ServiceMessage3"));
         }
 
-
-        progressBar = fragmentView.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.VISIBLE);
         rGroup      = fragmentView.findViewById(R.id.rGroup);
+        layout      =  fragmentView.findViewById(R.id.surveyLayout);
+        progressBar = fragmentView.findViewById(R.id.progressBar);
+
+        new InterfaceManager().showProgressBar(layout, progressBar);
 
         bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
@@ -123,34 +115,26 @@ public class SurveyFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void nextQuestion()
     {
-        RadioButton rbSelected = fragmentView.findViewById(rGroup.getCheckedRadioButtonId());
+        RadioButton rbSelected =
+                fragmentView.findViewById(rGroup.getCheckedRadioButtonId());
 
-        if ( rbSelected == null )
-        {
-            Toast.makeText(getActivity(), "Escolha uma opção!", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        Alternative selectedAlternative =
+                questionManager.getSelectedAlternative(position, questionList, rGroup, rbSelected);
 
-        Alternative selectedAlternative = questionManager.getSelectedAlternative(position, questionList, rGroup, rbSelected);
         alternativeList.add(selectedAlternative);
         answer.setAlternativeList(alternativeList);
 
         position++;
 
         if ( position == (total - 1) )
-        {
             nextButton.setText("Finalizar Pesquisa");
-//            nextButton.setBackgroundColor(getActivity().getColor(R.color.green));
-        }
 
-        if ( position < total )
-        {
+        if ( position < total ) {
             questionManager.showQuestion(position, questionList, getActivity());
-        }
-        else
-        {
+        } else {
 //            Fragment fragment = new ToastFragment();
-            Fragment fragment = new AskForOpinionFragment();
+//            Fragment fragment = new AskForOpinionFragment();
+            Fragment fragment = new CustomerOpinionFragment();
 
             bundle.putSerializable("answer", answer);
             fragment.setArguments(bundle);
@@ -161,15 +145,10 @@ public class SurveyFragment extends Fragment {
     }
 
     private void getFragment(Fragment fragment) {
-
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace( R.id.frameLayout, fragment )
                 .commit();
-
     }
-
-
-
 
 }

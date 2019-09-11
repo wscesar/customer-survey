@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
-import com.bbi.pesquisa.services.SaveDataService;
+import com.bbi.pesquisa.util.InterfaceManager;
 
 
 public class AskForOpinionFragment extends Fragment {
@@ -32,13 +32,12 @@ public class AskForOpinionFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View fragmentView = inflater.inflate(R.layout.fragment_prompt, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_message, container, false);
 
         TextView headerTitle = getActivity().findViewById(R.id.title);
         headerTitle.setText(R.string.app_name);
@@ -49,8 +48,8 @@ public class AskForOpinionFragment extends Fragment {
         bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
 
-        layout      = fragmentView.findViewById(R.id.layout);
-        progressBar = getActivity().findViewById(R.id.progressBar);
+        layout      = fragmentView.findViewById(R.id.messageLayout);
+        progressBar = fragmentView.findViewById(R.id.progressBar);
 
         Button yesButton = fragmentView.findViewById(R.id.yesButton);
         yesButton.setOnClickListener(new View.OnClickListener() {
@@ -74,23 +73,14 @@ public class AskForOpinionFragment extends Fragment {
 
     private void getFragment(Fragment fragment) {
 
+        new InterfaceManager().showProgressBar(layout, progressBar);
+
         fragment.setArguments(bundle);
 
         getFragmentManager()
                 .beginTransaction()
                 .replace( R.id.frameLayout, fragment )
                 .commit();
-    }
-
-    private void saveData() {
-        showProgressBar();
-        SaveDataService service = new SaveDataService();
-        service.start(getActivity().getApplicationContext(), answer);
-    }
-
-    private void showProgressBar(){
-        layout.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
     }
 
 }

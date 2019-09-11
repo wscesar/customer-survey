@@ -17,31 +17,25 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bbi.pesquisa.fragments.LastFragment;
 import com.bbi.pesquisa.fragments.OrderFragment;
 import com.bbi.pesquisa.model.NetworkConfiguration;
-import com.bbi.pesquisa.services.GetLogoService;
+import com.bbi.pesquisa.util.InterfaceManager;
 import com.bbi.pesquisa.util.NetworkManager;
 
 
 public class MainActivity extends AppCompatActivity {
     boolean isLongPress = false;
 
-//    private TextView message;
-//    private LinearLayout layout;
-//    private ProgressBar progressBar;
+    private InterfaceManager interfaceManager = new InterfaceManager();
 
     private NetworkManager networkManager;
-
-    private InputMethodManager inputManager;
 
     private ImageView logo;
 
@@ -56,34 +50,27 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             int surveyId  = intent.getIntExtra("surveyId", 0);
 
-            if ( surveyId > 0 ) {
-                ProgressBar progressBar = findViewById(R.id.progressBar);
-                progressBar.setVisibility(View.GONE);
+            if ( surveyId > 0 )
                 getFragment(new LastFragment());
-            }
         }
     };
-
 
     private BroadcastReceiver bitmapReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
             Bitmap bitmap = intent.getParcelableExtra("bitmap");
 
             if ( bitmap != null )
                 logo.setImageBitmap(bitmap);
-
         }
     };
 
     @Override
-    protected void onResume() {
+    protected void onStart() {
 
-        super.onResume();
+        super.onStart();
 
-        if(network != null){
-
+        if ( network != null ) {
             LocalBroadcastManager
                     .getInstance(getApplicationContext())
                     .registerReceiver(idReceiver, new IntentFilter("SaveDataService"));
@@ -92,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
                     .getInstance(getApplicationContext())
                     .registerReceiver(bitmapReceiver, new IntentFilter("GetLogoService"));
         }
-
-
     }
 
     @Override
@@ -113,9 +98,6 @@ public class MainActivity extends AppCompatActivity {
         // init global vars
         logo        = findViewById(R.id.logo);
         modal       = findViewById(R.id.modal);
-//        layout      = findViewById(R.id.layout);
-//        message     = findViewById(R.id.message);
-//        progressBar = findViewById(R.id.progressBar);
 
         // init order form
         orderForm    = findViewById(R.id.orderForm);
@@ -129,15 +111,13 @@ public class MainActivity extends AppCompatActivity {
         inputSsid  = findViewById(R.id.ssid);
         inputPass  = findViewById(R.id.pass);
 
-        inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
         networkManager = new NetworkManager(this);
         network = networkManager.getConfiguration();
 
         if ( network != null ) {
 
             if ( network.getId() == 1 )
-                getLogo();
+                interfaceManager.getLogo(getApplicationContext()); //getLogo();
             else
                 showModal(configForm);
 
@@ -148,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
                     hideModal(view.getRootView());
                 }
             });
-
 
 //            logo.setOnLongClickListener(new View.OnLongClickListener() {
 //                @Override
@@ -174,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 if (isLongPress) {
                                     showModal(orderForm);
-                                    showFocusOn(inputOrderId);
+                                    interfaceManager.showFocusOn(MainActivity.this, getApplicationContext(), inputOrderId);
                                 }
                             }
 
@@ -190,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
             });
 
 
-
             LinearLayout logo_bbi = findViewById(R.id.footer);
             logo_bbi.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -198,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                     authPassword = findViewById(R.id.authPassword);
                     displayNetworkConfig();
                     showModal(authForm);
-                    showFocusOn(authPassword);
+                    interfaceManager.showFocusOn(MainActivity.this, getApplicationContext(), authPassword);
                     return false;
                 }
             });
@@ -208,9 +186,8 @@ public class MainActivity extends AppCompatActivity {
             configNetwork.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     saveNetwork();
-                    getLogo();
+                    interfaceManager.getLogo(getApplicationContext());
                     hideModal(view);
                 }
             });
@@ -220,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     EditText authPassword = findViewById(R.id.authPassword);
-                    showFocusOn(authPassword);
+                    interfaceManager.showFocusOn(MainActivity.this, getApplicationContext(), authPassword);
 
                     if(authPassword.getText().toString().trim().equals("")) {
                         showModal(configForm);
@@ -236,10 +213,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void getLogo() {
-        GetLogoService service = new GetLogoService();
-        service.start(getApplicationContext());
-    }
 
     private void displayNetworkConfig() {
         NetworkConfiguration config = networkManager.getConfiguration();
@@ -249,14 +222,7 @@ public class MainActivity extends AppCompatActivity {
         inputPass.setText( config.getPass() );
     }
 
-    private void showFocusOn(EditText inputField) {
-        inputManager.showSoftInput(inputField, 0);
-        inputField.requestFocus();
-        inputManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-    }
-
     private void saveNetwork() {
-
         String ip   = inputIp.getText().toString().trim();
         String ssid = inputSsid.getText().toString().trim();
         String pass = inputPass.getText().toString().trim();
@@ -268,7 +234,6 @@ public class MainActivity extends AppCompatActivity {
             networkManager.updateConfiguration(ip, port, ssid, pass);
         else if ( network != null )
             networkManager.insertConfiguration(ip, port, ssid, pass);
-
     }
 
     private void showModal(LinearLayout form) {
@@ -278,9 +243,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void hideModal(View view) {
-        modal.setVisibility(View.GONE);
         hideForms();
-        hideKeyboard(view);
+        modal.setVisibility(View.GONE);
+        interfaceManager.hideKeyboard(MainActivity.this, getApplicationContext(), view);
     }
 
     private void hideForms() {
@@ -289,17 +254,11 @@ public class MainActivity extends AppCompatActivity {
         configForm.setVisibility(View.GONE);
     }
 
-    private void hideKeyboard(View view) {
-        inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
     private void getFragment(Fragment fragment) {
-
         getSupportFragmentManager()
                 .beginTransaction()
-                .add( R.id.frameLayout, fragment )
+                .replace( R.id.frameLayout, fragment )
                 .commit();
-
     }
 
 
@@ -335,20 +294,19 @@ public class MainActivity extends AppCompatActivity {
         {
             Toast.makeText(getApplicationContext(), "Erro ao conectar", Toast.LENGTH_SHORT).show();
         }else{
-            getLogo();
-//            Toast.makeText(getApplicationContext(), "Conectando...", Toast.LENGTH_SHORT).show();
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Conectando")
-                    .setMessage("Conectando na rede: " + networkSSID + ".")
-                    .setNeutralButton("OK", null)
-                    .show();
+            interfaceManager.getLogo(getApplicationContext());
+            alert(networkSSID);
         }
 
     }
 
 
-
-
-
+    private void alert(String networkSSID ){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Conectando")
+                .setMessage("Conectando na rede: " + networkSSID + ".")
+                .setNeutralButton("OK", null)
+                .show();
+    }
 
 } //end Activity

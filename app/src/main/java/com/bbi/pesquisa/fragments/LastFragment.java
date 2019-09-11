@@ -1,25 +1,17 @@
 package com.bbi.pesquisa.fragments;
 
-
-
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-
-//import android.app.Fragment;
-//import android.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bbi.pesquisa.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class LastFragment extends Fragment {
 
     public LastFragment() {
@@ -30,17 +22,28 @@ public class LastFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View v = inflater.inflate(R.layout.fragment_last, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_message, container, false);
 
-        TextView headerTitle = getActivity().findViewById(R.id.title);
-        headerTitle.setText(R.string.app_name);
+        ProgressBar progressBar = fragmentView.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
 
-        Button button = v.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        TextView title = getActivity().findViewById(R.id.title);
+        TextView message = fragmentView.findViewById(R.id.message);
+        LinearLayout yesNoButtons = fragmentView.findViewById(R.id.yesNoButtons);
+        Button finishButton = fragmentView.findViewById(R.id.finishButton);
+
+
+        title.setText(R.string.app_name);
+
+        message.setText("Obrigado");
+
+        yesNoButtons.setVisibility(View.GONE);
+
+        finishButton.setVisibility(View.VISIBLE);
+
+        finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                getActivity().finish();
-//                System.exit(0);
                 getFragmentManager()
                         .beginTransaction()
                         .replace( R.id.frameLayout, new PromptFragment() )
@@ -48,7 +51,7 @@ public class LastFragment extends Fragment {
             }
         });
 
-        return v;
+        return fragmentView;
     }
 
 }

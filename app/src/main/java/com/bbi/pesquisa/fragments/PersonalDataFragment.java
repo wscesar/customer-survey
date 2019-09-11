@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.bbi.pesquisa.services.SaveDataService;
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
+import com.bbi.pesquisa.util.InterfaceManager;
 import com.bbi.pesquisa.util.Mask;
 import com.embarcadero.javaandroid.DAOComponent;
 import com.embarcadero.javaandroid.SqlCommandBuilder;
@@ -32,13 +33,15 @@ import com.embarcadero.javaandroid.TDBXReader;
 
 public class PersonalDataFragment extends Fragment {
 
+    private InterfaceManager interfaceManager;
     private View fragmentView;
     private Answer answer;
     private TextView inputDay, inputMonth;
     private EditText inputName, inputEmail, inputCity, inputPhone;
     private InputMethodManager inputManager;
     private String name, phone, email, city, day, month, birthday;
-    private LinearLayout modal, birthdayPicker;
+    private LinearLayout layout, modal, birthdayPicker;
+    private ProgressBar progressBar;
 
     private NumberPicker dayPicker, monthPicker;
 
@@ -81,6 +84,9 @@ public class PersonalDataFragment extends Fragment {
 
         fragmentView = inflater.inflate(R.layout.fragment_personal_data, container, false);
         inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        progressBar =  fragmentView.findViewById(R.id.progressBar);
+        layout =  fragmentView.findViewById(R.id.personalDataLayout);
 
         Bundle bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
@@ -151,16 +157,15 @@ public class PersonalDataFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 hideAlert();
+                interfaceManager.showProgressBar(layout, progressBar);
                 saveData();
             }
         });
 
-        final Button btn = fragmentView.findViewById(R.id.button);
-        btn.setOnClickListener(new View.OnClickListener() {
+        Button saveButton = fragmentView.findViewById(R.id.savePersonalData);
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                btn.setVisibility(View.GONE);
-//                showProgressBar();
                 inputManager.hideSoftInputFromWindow(fragmentView.getWindowToken(), 0);
                 createAnswer();
             }
@@ -177,34 +182,10 @@ public class PersonalDataFragment extends Fragment {
     private void replaceValue(EditText editText, String value) {
         if ( value != null ) {
             if ( value.isEmpty() )
-                showFocusOn(editText);
+                interfaceManager.showFocusOn(getActivity(), getContext(), editText);
             else
                 editText.setText( value );
         }
-    }
-
-    private void showFocusOn( EditText editText ) {
-        inputManager.showSoftInput(editText, 0);
-        editText.requestFocus();
-        inputManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-    }
-
-    private void showProgressBar()
-    {
-        ProgressBar progressBar =  getActivity().findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.VISIBLE);
-
-        ScrollView layout =  getActivity().findViewById(R.id.scrollView);
-        layout.setVisibility(View.INVISIBLE);
-    }
-
-    private void hideProgressBar()
-    {
-        ProgressBar progressBar =  getActivity().findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.GONE);
-
-        ScrollView layout =  getActivity().findViewById(R.id.scrollView);
-        layout.setVisibility(View.VISIBLE);
     }
 
     private void toast(String message) {
@@ -296,8 +277,10 @@ public class PersonalDataFragment extends Fragment {
         else if( name.isEmpty() || phone.isEmpty() || email.isEmpty() || city.isEmpty() || day.isEmpty() || month.isEmpty())
             showAlert();////setBundle();//
 
-        else
+        else{
+            interfaceManager.showProgressBar(layout, progressBar);
             saveData();
+        }
 
     }
 
@@ -338,7 +321,7 @@ public class PersonalDataFragment extends Fragment {
     }
 
     private void saveData() {
-        showProgressBar();
+        interfaceManager.showProgressBar(layout, progressBar);
         SaveDataService service = new SaveDataService();
         service.start(getActivity().getApplicationContext(), answer);
     }
@@ -348,28 +331,16 @@ public class PersonalDataFragment extends Fragment {
 
         LinearLayout layout = getActivity().findViewById(R.id.alert);
         layout.setVisibility(View.VISIBLE);
-//
+
         TextView message  = getActivity().findViewById(R.id.message);
         message.setText(R.string.alert);
     }
 
     private void hideAlert() {
-//        if(inputName.getText().equals(""))
-//            showFocusOn(inputName);
-//
-//        else if(inputPhone.getText().equals(""))
-//            showFocusOn(inputPhone);
-//
-//        else if(inputEmail.getText().equals(""))
-//            showFocusOn(inputEmail);
-//
-//        else if(inputCity.getText().equals(""))
-//            showFocusOn(inputCity);
-
         LinearLayout layout = getActivity().findViewById(R.id.alert);
         layout.setVisibility(View.GONE);
 
-        hideProgressBar();
+        interfaceManager.hideProgressBar(layout, progressBar);
         modal.setVisibility(View.GONE);
     }
 
