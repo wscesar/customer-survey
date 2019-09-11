@@ -19,13 +19,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bbi.pesquisa.services.ParamService;
-import com.bbi.pesquisa.services.SaveDataService;
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
+import com.bbi.pesquisa.util.UIManager;
 
 public class ToastFragment extends Fragment {
+    private UIManager UIManager = new UIManager();
     private View fragmentView;
-    private TextView message;
 
     private Answer answer;
     private Bundle bundle;
@@ -37,14 +37,13 @@ public class ToastFragment extends Fragment {
         // Required empty public constructor
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        LocalBroadcastManager
-                .getInstance(getActivity().getApplicationContext())
-                .registerReceiver(paramReceiver, new IntentFilter("ParamService"));
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        LocalBroadcastManager
+//                .getInstance(getActivity().getApplicationContext())
+//                .registerReceiver(paramReceiver, new IntentFilter("ParamService"));
+//    }
 
     private BroadcastReceiver paramReceiver = new BroadcastReceiver() {
         @Override
@@ -52,41 +51,40 @@ public class ToastFragment extends Fragment {
 
             String param  = intent.getStringExtra("param");
 
-            if ( param != null && !param.isEmpty() ) {
-                message = fragmentView.findViewById(R.id.message);
+            TextView message = fragmentView.findViewById(R.id.message);
 
-                int alert = bundle.getInt("alert", 0);
-
-                if ( alert > 0 )
-                    message.setText(R.string.alert);
-                else
-                    message.setText(R.string.hasToast);
-
-            } else {
+            if ( param != null && !param.isEmpty() ){
+                message.setText(R.string.hasToast);
+                bundle.putInt("hasToast", 1);
+            }
+            else {
                 message.setText(R.string.noToast);
+                bundle.putInt("hasToast", 0);
             }
 
-            hideProgressBar();
-
+            UIManager.hideProgressBar(layout, progressBar);
         }
     };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        fragmentView = inflater.inflate(R.layout.fragment_message, container, false);
-        message = fragmentView.findViewById(R.id.message);
-
         ParamService service = new ParamService();
         service.start(getActivity().getApplicationContext());
+
+        LocalBroadcastManager
+                .getInstance(getActivity().getApplicationContext())
+                .registerReceiver(paramReceiver, new IntentFilter("ParamService"));
+
+        fragmentView = inflater.inflate(R.layout.fragment_message, container, false);
 
         bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
 
-        layout      = fragmentView.findViewById(R.id.messageLayout);
+        layout      = fragmentView.findViewById(R.id.layout);
         progressBar = fragmentView.findViewById(R.id.progressBar);
 
-//        showProgressBar();
+        UIManager.showProgressBar(layout, progressBar);
 
         TextView headerTitle = getActivity().findViewById(R.id.title);
         headerTitle.setText(R.string.app_name);
@@ -103,8 +101,8 @@ public class ToastFragment extends Fragment {
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showProgressBar();
-                saveData();
+//                UIManager.showProgressBar(layout, progressBar);
+                UIManager.saveData(getActivity(), answer);
             }
         });
 
@@ -122,22 +120,6 @@ public class ToastFragment extends Fragment {
                 .beginTransaction()
                 .replace( R.id.frameLayout, fragment )
                 .commit();
-    }
-
-    private void saveData() {
-        showProgressBar();
-        SaveDataService service = new SaveDataService();
-        service.start(getActivity().getApplicationContext(), answer);
-    }
-
-    private void showProgressBar(){
-        layout.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    private void hideProgressBar() {
-        layout.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
     }
 
 }

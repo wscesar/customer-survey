@@ -32,7 +32,6 @@ public class LastFragment extends Fragment {
         LinearLayout yesNoButtons = fragmentView.findViewById(R.id.yesNoButtons);
         Button finishButton = fragmentView.findViewById(R.id.finishButton);
 
-
         title.setText(R.string.app_name);
 
         message.setText("Obrigado");

@@ -27,7 +27,7 @@ import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Alternative;
 import com.bbi.pesquisa.model.Answer;
 import com.bbi.pesquisa.model.Question;
-import com.bbi.pesquisa.util.InterfaceManager;
+import com.bbi.pesquisa.util.UIManager;
 import com.bbi.pesquisa.util.QuestionManager;
 
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class SurveyFragment extends Fragment {
             if ( questionList.size() > 0 && mountQuestionList)
             {
                 questionManager.showQuestion(0, questionList, getActivity());
-                new InterfaceManager().hideProgressBar(layout, progressBar);
+                new UIManager().hideProgressBar(layout, progressBar);
 
                 mountQuestionList = false;
             }
@@ -89,10 +89,10 @@ public class SurveyFragment extends Fragment {
         }
 
         rGroup      = fragmentView.findViewById(R.id.rGroup);
-        layout      =  fragmentView.findViewById(R.id.surveyLayout);
+        layout      =  fragmentView.findViewById(R.id.layout);
         progressBar = fragmentView.findViewById(R.id.progressBar);
 
-        new InterfaceManager().showProgressBar(layout, progressBar);
+        new UIManager().showProgressBar(layout, progressBar);
 
         bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
@@ -132,9 +132,7 @@ public class SurveyFragment extends Fragment {
         if ( position < total ) {
             questionManager.showQuestion(position, questionList, getActivity());
         } else {
-//            Fragment fragment = new ToastFragment();
-//            Fragment fragment = new AskForOpinionFragment();
-            Fragment fragment = new CustomerOpinionFragment();
+            Fragment fragment = new OpinionFragment();
 
             bundle.putSerializable("answer", answer);
             fragment.setArguments(bundle);

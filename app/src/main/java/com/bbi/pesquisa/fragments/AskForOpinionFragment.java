@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
-import com.bbi.pesquisa.util.InterfaceManager;
+import com.bbi.pesquisa.util.UIManager;
 
 
 public class AskForOpinionFragment extends Fragment {
@@ -48,14 +48,14 @@ public class AskForOpinionFragment extends Fragment {
         bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
 
-        layout      = fragmentView.findViewById(R.id.messageLayout);
+        layout      = fragmentView.findViewById(R.id.layout);
         progressBar = fragmentView.findViewById(R.id.progressBar);
 
         Button yesButton = fragmentView.findViewById(R.id.yesButton);
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getFragment(new CustomerOpinionFragment());
+                getFragment(new OpinionFragment());
             }
         });
 
@@ -73,7 +73,7 @@ public class AskForOpinionFragment extends Fragment {
 
     private void getFragment(Fragment fragment) {
 
-        new InterfaceManager().showProgressBar(layout, progressBar);
+        new UIManager().showProgressBar(layout, progressBar);
 
         fragment.setArguments(bundle);
 

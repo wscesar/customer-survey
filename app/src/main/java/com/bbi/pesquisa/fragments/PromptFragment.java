@@ -32,8 +32,6 @@ public class PromptFragment extends Fragment {
         // Required empty public constructor
     }
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -85,7 +83,7 @@ public class PromptFragment extends Fragment {
 
         answer.setOrderId(orderId);
 
-//        setBundle(new CustomerOpinionFragment());
+//        setBundle(new OpinionFragment());
         setBundle(new SurveyFragment());
     }
 
@@ -96,7 +94,6 @@ public class PromptFragment extends Fragment {
     }
 
     private void getFragment(Fragment fragment) {
-
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace( R.id.frameLayout, fragment )

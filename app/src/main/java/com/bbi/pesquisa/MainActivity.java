@@ -24,16 +24,16 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bbi.pesquisa.fragments.LastFragment;
-import com.bbi.pesquisa.fragments.OrderFragment;
+import com.bbi.pesquisa.fragments.PromptFragment;
 import com.bbi.pesquisa.model.NetworkConfiguration;
-import com.bbi.pesquisa.util.InterfaceManager;
+import com.bbi.pesquisa.util.UIManager;
 import com.bbi.pesquisa.util.NetworkManager;
 
 
 public class MainActivity extends AppCompatActivity {
     boolean isLongPress = false;
 
-    private InterfaceManager interfaceManager = new InterfaceManager();
+    private UIManager UIManager = new UIManager();
 
     private NetworkManager networkManager;
 
@@ -117,15 +117,16 @@ public class MainActivity extends AppCompatActivity {
         if ( network != null ) {
 
             if ( network.getId() == 1 )
-                interfaceManager.getLogo(getApplicationContext()); //getLogo();
+                UIManager.getLogo(getApplicationContext()); //getLogo();
             else
-                showModal(configForm);
+                UIManager.showModal(MainActivity.this, configForm);//showModal(configForm);
 
 
             modal.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    hideModal(view.getRootView());
+//                    hideModal(view.getRootView());
+                    UIManager.hideModal(MainActivity.this, view.getRootView());
                 }
             });
 
@@ -152,12 +153,12 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 if (isLongPress) {
-                                    showModal(orderForm);
-                                    interfaceManager.showFocusOn(MainActivity.this, getApplicationContext(), inputOrderId);
+                                    UIManager.showModal(MainActivity.this, orderForm);//showModal(orderForm);
+                                    UIManager.showFocusOn(MainActivity.this, inputOrderId);
                                 }
                             }
 
-                        }, 5000);
+                        }, 3000);
                     }
                     else if ( event.getAction() == MotionEvent.ACTION_UP )
                     {
@@ -175,8 +176,8 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onLongClick(View view) {
                     authPassword = findViewById(R.id.authPassword);
                     displayNetworkConfig();
-                    showModal(authForm);
-                    interfaceManager.showFocusOn(MainActivity.this, getApplicationContext(), authPassword);
+                    UIManager.showModal(MainActivity.this, authForm);//showModal(authForm);
+                    UIManager.showFocusOn(MainActivity.this, authPassword);
                     return false;
                 }
             });
@@ -187,8 +188,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     saveNetwork();
-                    interfaceManager.getLogo(getApplicationContext());
-                    hideModal(view);
+                    UIManager.getLogo(getApplicationContext());
+                    UIManager.hideModal(MainActivity.this, view);//hideModal(view);
                 }
             });
 
@@ -197,19 +198,19 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     EditText authPassword = findViewById(R.id.authPassword);
-                    interfaceManager.showFocusOn(MainActivity.this, getApplicationContext(), authPassword);
+                    UIManager.showFocusOn(MainActivity.this, authPassword);
 
                     if(authPassword.getText().toString().trim().equals("")) {
-                        showModal(configForm);
+                        UIManager.showModal(MainActivity.this, configForm);//showModal(configForm);
                     } else {
                         authPassword.setText("");
-                        hideModal(view);
+                        UIManager.hideModal(MainActivity.this, view);//hideModal(view);
                     }
                 }
             });
 
-            getFragment( new OrderFragment() );
-//            getFragment( new PromptFragment() );
+//            getFragment( new OrderFragment() );
+            getFragment( new PromptFragment() );
         }
     }
 
@@ -236,23 +237,6 @@ public class MainActivity extends AppCompatActivity {
             networkManager.insertConfiguration(ip, port, ssid, pass);
     }
 
-    private void showModal(LinearLayout form) {
-        hideForms();
-        modal.setVisibility(View.VISIBLE);
-        form.setVisibility(View.VISIBLE);
-    }
-
-    private void hideModal(View view) {
-        hideForms();
-        modal.setVisibility(View.GONE);
-        interfaceManager.hideKeyboard(MainActivity.this, getApplicationContext(), view);
-    }
-
-    private void hideForms() {
-        authForm.setVisibility(View.GONE);
-        orderForm.setVisibility(View.GONE);
-        configForm.setVisibility(View.GONE);
-    }
 
     private void getFragment(Fragment fragment) {
         getSupportFragmentManager()
@@ -294,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
         {
             Toast.makeText(getApplicationContext(), "Erro ao conectar", Toast.LENGTH_SHORT).show();
         }else{
-            interfaceManager.getLogo(getApplicationContext());
+            UIManager.getLogo(getApplicationContext());
             alert(networkSSID);
         }
 

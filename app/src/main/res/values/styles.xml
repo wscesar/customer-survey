@@ -66,21 +66,6 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <!--<style name="formRow">-->
-        <!--<item name="android:layout_width">match_parent</item>-->
-        <!--<item name="android:layout_height">wrap_content</item>-->
-        <!--<item name="android:layout_marginTop">32dp</item>-->
-        <!--<item name="android:orientation">horizontal</item>-->
-    <!--</style>-->
-
-    <!--android:visibility="gone"-->
-    <!--android:background="#992d2d2d"-->
-    <!--android:orientation="vertical"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:paddingTop="100dp"-->
-    <!--android:gravity="center_horizontal"-->
-
     <style name="formRow">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -154,16 +139,12 @@
 
     <style name="yesButton" parent="shortButton">
         <item name="android:text">SIM</item>
-        <item name="android:background">@color/green</item>
-
-
-
+        <item name="android:background">@color/blue</item>
     </style>
 
     <style name="noButton" parent="shortButton">
         <item name="android:text">NÂO</item>
         <item name="android:background">@color/red</item>
-
     </style>
 
     <style name="formSlash">
@@ -173,13 +154,6 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:textSize">18sp</item>
     </style>
-
-    <!--<style name="errorLayout">-->
-        <!--<item name="android:visibility">gone</item>-->
-        <!--<item name="android:layout_width">match_parent</item>-->
-        <!--<item name="android:layout_height">wrap_content</item>-->
-        <!--<item name="android:orientation">vertical</item>-->
-    <!--</style>-->
 
     <style name="message">
         <item name="android:gravity">center</item>
@@ -192,8 +166,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
-
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

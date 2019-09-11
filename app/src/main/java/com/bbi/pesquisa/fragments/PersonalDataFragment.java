@@ -1,47 +1,33 @@
 package com.bbi.pesquisa.fragments;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bbi.pesquisa.services.SaveDataService;
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
-import com.bbi.pesquisa.util.InterfaceManager;
+import com.bbi.pesquisa.util.UIManager;
 import com.bbi.pesquisa.util.Mask;
-import com.embarcadero.javaandroid.DAOComponent;
-import com.embarcadero.javaandroid.SqlCommandBuilder;
-import com.embarcadero.javaandroid.TDBXReader;
 
 public class PersonalDataFragment extends Fragment {
 
-    private InterfaceManager interfaceManager;
-    private View fragmentView;
     private Answer answer;
     private TextView inputDay, inputMonth;
     private EditText inputName, inputEmail, inputCity, inputPhone;
-    private InputMethodManager inputManager;
     private String name, phone, email, city, day, month, birthday;
-    private LinearLayout layout, modal, birthdayPicker;
-    private ProgressBar progressBar;
+    private LinearLayout birthdayPicker, alertLayout;
+    private int hasToast;
+
+    private UIManager UIManager = new UIManager();
 
     private NumberPicker dayPicker, monthPicker;
 
@@ -49,47 +35,18 @@ public class PersonalDataFragment extends Fragment {
         // Required empty public constructor
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        replaceValue(inputCity, answer.getCity());
-        replaceValue(inputEmail, answer.getEmail());
-        replaceValue(inputPhone, answer.getPhone());
-        replaceValue(inputName, answer.getName());
-
-//        LocalBroadcastManager
-//                .getInstance(getActivity().getApplicationContext())
-//                .registerReceiver(paramReceiver, new IntentFilter("ParamService"));
-    }
-
-    private BroadcastReceiver paramReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            String param  = intent.getStringExtra("param");
-//            if ( !param.isEmpty() )
-//                validateFields();
-//            else
-//                saveData();
-
-        }
-    };
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        modal = getActivity().findViewById(R.id.modal);
+        View fragmentView = inflater.inflate(R.layout.fragment_personal_data, container, false);
+
         birthdayPicker = getActivity().findViewById(R.id.birthdayPicker);
-
-        fragmentView = inflater.inflate(R.layout.fragment_personal_data, container, false);
-        inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        progressBar =  fragmentView.findViewById(R.id.progressBar);
-        layout =  fragmentView.findViewById(R.id.personalDataLayout);
+        alertLayout = getActivity().findViewById(R.id.alertLayout);
 
         Bundle bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
+        hasToast =  bundle.getInt("hasToast", 0);
 
         TextView headerTitle = getActivity().findViewById(R.id.title);
         headerTitle.setText("Dados para cadastro");
@@ -106,49 +63,33 @@ public class PersonalDataFragment extends Fragment {
 
         dayPicker.setMinValue(1);
         dayPicker.setMaxValue(31);
-        dayPicker.setWrapSelectorWheel(false);
 
         monthPicker.setMinValue(1);
         monthPicker.setMaxValue(12);
-        monthPicker.setWrapSelectorWheel(false);
 
         inputPhone.addTextChangedListener(Mask.insert(Mask.PHONE_MASK, inputPhone));
 
         inputDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showBirthdayPicker();
+                UIManager.showModal(getActivity(), birthdayPicker);
             }
         });
 
         inputMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showBirthdayPicker();
+                UIManager.showModal(getActivity(), birthdayPicker);
             }
         });
 
-        Button confirmBirthdayButton = getActivity().findViewById(R.id.confirmBirthday);
-        confirmBirthdayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                int day = dayPicker.getValue();
-                int month = monthPicker.getValue();
-
-                inputDay.setText(String.valueOf(day));
-                inputMonth.setText(String.valueOf(month));
-
-                modal.setVisibility(View.GONE);
-                birthdayPicker.setVisibility(View.GONE);
-            }
-        });
 
         Button yesButton = getActivity().findViewById(R.id.yesButton);
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hideAlert();
+                UIManager.hideModal(getActivity());
             }
         });
 
@@ -156,9 +97,16 @@ public class PersonalDataFragment extends Fragment {
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hideAlert();
-                interfaceManager.showProgressBar(layout, progressBar);
-                saveData();
+                UIManager.hideModal(getActivity());
+                UIManager.saveData(getActivity(), answer);
+            }
+        });
+
+        Button confirmBirthdayButton = getActivity().findViewById(R.id.confirmBirthday);
+        confirmBirthdayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                confirmBirthday();
             }
         });
 
@@ -166,34 +114,86 @@ public class PersonalDataFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                inputManager.hideSoftInputFromWindow(fragmentView.getWindowToken(), 0);
-                createAnswer();
+                UIManager.hideKeyboard(getActivity(), getContext(), view);
+                createAnswerObject();
             }
         });
 
         return fragmentView;
     }
 
-    private void showBirthdayPicker() {
-        modal.setVisibility(View.VISIBLE);
-        birthdayPicker.setVisibility(View.VISIBLE);
+    private void confirmBirthday() {
+        int day = dayPicker.getValue();
+        int month = monthPicker.getValue();
+
+        inputDay.setText(String.valueOf(day));
+        inputMonth.setText(String.valueOf(month));
+
+        UIManager.hideModal(getActivity());
     }
 
-    private void replaceValue(EditText editText, String value) {
-        if ( value != null ) {
-            if ( value.isEmpty() )
-                interfaceManager.showFocusOn(getActivity(), getContext(), editText);
-            else
-                editText.setText( value );
+    private void validateFields() {
+
+        if( name.length() > 0 && name.length() < 3 )
+        {
+            String message = "Informe um nome válido";
+            UIManager.showAlert(getActivity(), alertLayout, message, true);
+            UIManager.showFocusOn(getActivity(), inputName);
         }
+        else if( phone.length() > 0 && phone.length() < 15 )
+        {
+            String message = "Informe um telefone válido";
+            UIManager.showAlert(getActivity(), alertLayout, message, true);
+            UIManager.showFocusOn(getActivity(), inputPhone);
+        }
+        else if( email.length() > 0 && !validateEmail(email))
+        {
+            String message = "Informe um email válido";
+            UIManager.showAlert(getActivity(), alertLayout, message, true);
+            UIManager.showFocusOn(getActivity(), inputEmail);
+        }
+        else if( city.length() > 0 && city.length() < 3 )
+        {
+            String message = "Informe uma cidade válida";
+            UIManager.showAlert(getActivity(), alertLayout, message, true);
+            UIManager.showFocusOn(getActivity(), inputCity);
+        }
+        else if( hasToast > 0
+                 && name.isEmpty()
+                 || phone.isEmpty()
+                 || email.isEmpty()
+                 || city.isEmpty()
+                 || day.isEmpty()
+                 || month.isEmpty() )
+        {
+            String message = "Pra receber seu brinde é necessario preencher todos os campos\nGostaria de terminar seu cadastro?";
+            UIManager.showAlert(getActivity(), alertLayout, message, false);
+        }
+        else
+        {
+            UIManager.saveData(getActivity(), answer);
+        }
+
     }
 
-    private void toast(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    private boolean validateEmail(String email) {
+        String[] arr = email.split("@");
+        String[] domain;
+
+        if( arr.length > 1 && arr[0].length() >= 3 ) {
+
+            domain = arr[1].split("\\.");
+
+            if( domain.length > 1 )
+                return true;
+
+        }
+
+        return false;
+
     }
 
-    private void createAnswer()
-    {
+    private void createAnswerObject() {
         name = inputName.getText().toString().trim();
         phone = inputPhone.getText().toString().trim();
         email = inputEmail.getText().toString().trim();
@@ -208,142 +208,8 @@ public class PersonalDataFragment extends Fragment {
         answer.setCity(city);
         answer.setBirthday(birthday);
 
-        new IsParamToastActive().execute();
-
-//        ParamService service = new ParamService();
-//        service.start(getActivity().getApplicationContext());
-
+        validateFields();
 
     }
-
-    private class IsParamToastActive extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            SqlCommandBuilder command =
-                    SqlCommandBuilder
-                            .create("SELECT VALOR FROM TBPARAMETRO WHERE PARAMETRO = 'PRODUTO_BRINDE_PESQUISA'");
-
-            String param = "";
-            try
-            {
-                TDBXReader reader = new DAOComponent().getMethod().ExecuteQuery( command.toJson() );
-
-                while ( reader.next() ) {
-                    param = reader.getValue("VALOR").GetAsString();
-                }
-
-            } catch (Exception e) {
-                Log.e("teste", e.getMessage());
-            }
-
-            return param;
-        }
-
-        @Override
-        protected void onPostExecute(String param) {
-
-            if ( !param.isEmpty() )
-                validateFields();
-            else
-                saveData();
-
-        }
-    }
-
-    private void validateFields() {
-
-        if( name.length() > 0 && name.length() < 3 ){
-//            hideProgressBar();
-            toast("Informe um nome valido");
-        }
-
-
-        else if( phone.length() > 0 && phone.length() < 15 ) {
-//            hideProgressBar();
-            toast("Informe um telefone valido");
-        }
-
-        else if( email.length() > 0 && validateEmail(email)){
-//            hideProgressBar();
-            toast("Informe um email valido");
-        }
-
-        else if( city.length() > 0 && city.length() < 3 ){
-//            hideProgressBar();
-            toast("Informe uma cidade valida");
-        }
-
-        else if( name.isEmpty() || phone.isEmpty() || email.isEmpty() || city.isEmpty() || day.isEmpty() || month.isEmpty())
-            showAlert();////setBundle();//
-
-        else{
-            interfaceManager.showProgressBar(layout, progressBar);
-            saveData();
-        }
-
-    }
-
-    private boolean validateEmail(String email) {
-        String[] arr = email.split("@");
-        String[] domain;
-
-        if( arr.length > 1 && arr[0].length() >= 3 ) {
-
-            domain = arr[1].split(".");
-
-            if(domain.length > 1)
-                return true;
-
-        }
-
-        return false;
-
-    }
-
-    private void setBundle() {
-//        showProgressBar();
-        Fragment fragment = new ToastFragment();
-
-        Bundle bundle = new Bundle();
-        bundle.putInt("alert", 1);
-        bundle.putSerializable("answer", answer);
-        fragment.setArguments(bundle);
-
-        getFragment(fragment);
-    }
-
-    private void getFragment(Fragment fragment) {
-        getFragmentManager()
-                .beginTransaction()
-                .replace( R.id.frameLayout,  fragment)
-                .commit();
-    }
-
-    private void saveData() {
-        interfaceManager.showProgressBar(layout, progressBar);
-        SaveDataService service = new SaveDataService();
-        service.start(getActivity().getApplicationContext(), answer);
-    }
-
-    private void showAlert() {
-        modal.setVisibility(View.VISIBLE);
-
-        LinearLayout layout = getActivity().findViewById(R.id.alert);
-        layout.setVisibility(View.VISIBLE);
-
-        TextView message  = getActivity().findViewById(R.id.message);
-        message.setText(R.string.alert);
-    }
-
-    private void hideAlert() {
-        LinearLayout layout = getActivity().findViewById(R.id.alert);
-        layout.setVisibility(View.GONE);
-
-        interfaceManager.hideProgressBar(layout, progressBar);
-        modal.setVisibility(View.GONE);
-    }
-
-
 
 }

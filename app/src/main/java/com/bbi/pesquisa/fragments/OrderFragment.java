@@ -4,18 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-//import android.app.Fragment;
 
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
-import com.bbi.pesquisa.util.InterfaceManager;
+
 
 public class OrderFragment extends Fragment {
     private Bundle bundle = new Bundle();
@@ -35,8 +32,6 @@ public class OrderFragment extends Fragment {
         orderForm.setVisibility(View.VISIBLE);
 
         inputOrderId = fragmentView.findViewById(R.id.orderId);
-
-//        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
 
         Button saveOrderId = fragmentView.findViewById(R.id.saveOrderId);
         saveOrderId.setOnClickListener(new View.OnClickListener() {
@@ -64,8 +59,6 @@ public class OrderFragment extends Fragment {
         bundle.putSerializable("answer", answer);
         fragment.setArguments(bundle);
         getFragment(fragment);
-
-//        new InterfaceManager().getFragment(getActivity(), fragment);
     }
 
     private void getFragment(Fragment fragment) {

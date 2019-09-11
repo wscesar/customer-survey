@@ -6,21 +6,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
-import com.bbi.pesquisa.util.InterfaceManager;
+import com.bbi.pesquisa.util.UIManager;
 
-public class CustomerOpinionFragment extends Fragment {
-    private InterfaceManager interfaceManager = new InterfaceManager();
+public class OpinionFragment extends Fragment {
+    private UIManager UIManager = new UIManager();
     private EditText customerOpinionInput;
     private View fragmentView;
 
-    public CustomerOpinionFragment() {
+    public OpinionFragment() {
         // Required empty public constructor
     }
 
@@ -34,14 +32,14 @@ public class CustomerOpinionFragment extends Fragment {
 
         customerOpinionInput = fragmentView.findViewById(R.id.customerOpinionInput);
 
-        interfaceManager.showFocusOn(getActivity(), getContext(), customerOpinionInput);
+        UIManager.showFocusOn(getActivity(), customerOpinionInput);
 
         Button saveCustomerOpinionButton = fragmentView.findViewById(R.id.saveCustomerOpinionButton);
         saveCustomerOpinionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                interfaceManager.hideKeyboard(getActivity(), getContext(), view);
+                UIManager.hideKeyboard(getActivity(), getContext(), view);
 
                 String customerOpinion = customerOpinionInput.getText().toString().trim();
 
@@ -52,10 +50,6 @@ public class CustomerOpinionFragment extends Fragment {
                 Fragment fragment = new ToastFragment();
                 bundle.putSerializable("answer", answer);
                 fragment.setArguments(bundle);
-
-                LinearLayout layout= fragmentView.findViewById(R.id.customerOpinionLayout);
-                ProgressBar progressBar = fragmentView.findViewById(R.id.progressBar);
-                interfaceManager.showProgressBar(layout, progressBar);
 
                 getFragment(fragment);
 
