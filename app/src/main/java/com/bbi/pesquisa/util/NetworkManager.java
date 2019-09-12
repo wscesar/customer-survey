@@ -1,16 +1,24 @@
 package com.bbi.pesquisa.util;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.util.Log;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.bbi.pesquisa.R;
 import com.embarcadero.javaandroid.ConnectionFactory;
 import com.bbi.pesquisa.model.NetworkConfiguration;
 import com.embarcadero.javaandroid.DSProxy;
 import com.embarcadero.javaandroid.DSRESTConnection;
+
+import static android.content.Context.WIFI_SERVICE;
 
 public class NetworkManager extends SQLiteOpenHelper {
     public static DSProxy.TSvrMethod method;
@@ -121,6 +129,46 @@ public class NetworkManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         db.delete(TABLE, COL_ID + "=?", id);
+    }
+
+    public boolean wifiConnect(Activity activity, String networkSSID, String networkPass)
+    {
+        Context context = activity.getApplicationContext();
+
+        /* Cria um objeto com os dados da conexão wifi do aparelho */
+        android.net.wifi.WifiManager wm = (WifiManager) context.getSystemService(WIFI_SERVICE);
+        wm.setWifiEnabled(true);
+
+        /* Cria configuração do Wireless */
+        WifiConfiguration wifiConfig = new WifiConfiguration();
+        wifiConfig.SSID = "\"".concat(networkSSID).concat("\"");
+        wifiConfig.status = WifiConfiguration.Status.DISABLED;
+        wifiConfig.priority = 40;
+
+        /* WPA/WPA2 Security */
+        wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+        wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+        wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+        wifiConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+        wifiConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+        wifiConfig.preSharedKey = "\"".concat(networkPass).concat("\"");
+
+        /* Adiciona a rede Wireless */
+        int networkID = wm.addNetwork(wifiConfig);
+
+        /* Conecta a rede Wireless, caso falhe, exibe uma mensagem de erro. */
+        if(!wm.enableNetwork(networkID, true)) {
+            Toast.makeText(context, "Erro ao conectar", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            Toast.makeText(context, "Conectando...", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
     }
 
 }

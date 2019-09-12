@@ -1,6 +1,6 @@
 package com.bbi.pesquisa;
 
-import androidx.appcompat.app.AlertDialog;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -11,8 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -21,7 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.bbi.pesquisa.fragments.LastFragment;
 import com.bbi.pesquisa.fragments.PromptFragment;
@@ -85,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         // do nothing
     }
-    long then = 0;
+//    long then = 0;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -93,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(null);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
+
+//        View rootView = getWindow().getDecorView().getRootView();
+//
+//        UIManager.hideKeyboard(MainActivity.this, rootView);
 
 
         // init global vars
@@ -117,27 +118,17 @@ public class MainActivity extends AppCompatActivity {
         if ( network != null ) {
 
             if ( network.getId() == 1 )
-                UIManager.getLogo(getApplicationContext()); //getLogo();
+                UIManager.getLogo(getApplicationContext());
             else
-                UIManager.showModal(MainActivity.this, configForm);//showModal(configForm);
+                UIManager.showModal(MainActivity.this, configForm);
 
 
             modal.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    hideModal(view.getRootView());
                     UIManager.hideModal(MainActivity.this, view.getRootView());
                 }
             });
-
-//            logo.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View view) {
-//                    showModal(orderForm);
-//                    showFocusOn(inputOrderId);
-//                    return false;
-//                }
-//            });
 
 
             logo.setOnTouchListener(new View.OnTouchListener() {
@@ -209,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-//            getFragment( new OrderFragment() );
             getFragment( new PromptFragment() );
         }
     }
@@ -218,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
     private void displayNetworkConfig() {
         NetworkConfiguration config = networkManager.getConfiguration();
         inputIp.setText( config.getIp() );
-        inputPort.setText( config.getPort()+"" );
+        inputPort.setText( String.valueOf(config.getPort()) );
         inputSsid.setText( config.getSsid() );
         inputPass.setText( config.getPass() );
     }
@@ -229,10 +219,14 @@ public class MainActivity extends AppCompatActivity {
         String pass = inputPass.getText().toString().trim();
         int port = Integer.parseInt( inputPort.getText().toString().trim() );
 
-        wifiConnect(ssid, pass);
+        boolean connected = networkManager.wifiConnect(MainActivity.this, ssid, pass);
+
+        if (connected)
+            UIManager.getLogo(getApplicationContext());
 
         if ( network != null && network.getId() == 1 )
             networkManager.updateConfiguration(ip, port, ssid, pass);
+
         else if ( network != null )
             networkManager.insertConfiguration(ip, port, ssid, pass);
     }
@@ -245,52 +239,5 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-
-    private void wifiConnect(String networkSSID, String networkPass)
-    {
-        /* Cria um objeto com os dados da conexão wifi do aparelho */
-        WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        wm.setWifiEnabled(true);
-
-        /* Cria configuração do Wireless */
-        WifiConfiguration wifiConfig = new WifiConfiguration();
-        wifiConfig.SSID = "\"".concat(networkSSID).concat("\"");
-        wifiConfig.status = WifiConfiguration.Status.DISABLED;
-        wifiConfig.priority = 40;
-
-        /* WPA/WPA2 Security */
-        wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-        wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
-        wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-        wifiConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-        wifiConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
-        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
-        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-        wifiConfig.preSharedKey = "\"".concat(networkPass).concat("\"");
-
-        /* Adiciona a rede Wireless */
-        int networkID = wm.addNetwork(wifiConfig);
-
-        /* Conecta a rede Wireless, caso falhe, exibe uma mensagem de erro. */
-        if(!wm.enableNetwork(networkID, true))
-        {
-            Toast.makeText(getApplicationContext(), "Erro ao conectar", Toast.LENGTH_SHORT).show();
-        }else{
-            UIManager.getLogo(getApplicationContext());
-            alert(networkSSID);
-        }
-
-    }
-
-
-    private void alert(String networkSSID ){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Conectando")
-                .setMessage("Conectando na rede: " + networkSSID + ".")
-                .setNeutralButton("OK", null)
-                .show();
-    }
 
 } //end Activity
