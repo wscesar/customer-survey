@@ -6,13 +6,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.util.Log;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.bbi.pesquisa.R;
 import com.embarcadero.javaandroid.ConnectionFactory;
 import com.bbi.pesquisa.model.NetworkConfiguration;
 import com.embarcadero.javaandroid.DSProxy;
@@ -116,7 +116,6 @@ public class NetworkManager extends SQLiteOpenHelper {
     }
 
     private void connect(String ip, int port) {
-
         ConnectionFactory.sIp = ip;
         ConnectionFactory.sPorta = port;
 
@@ -129,6 +128,17 @@ public class NetworkManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         db.delete(TABLE, COL_ID + "=?", id);
+    }
+
+
+    public boolean isConnected(Context context) {
+        ConnectivityManager connManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+        return wifi.isConnected();
+
     }
 
     public boolean wifiConnect(Activity activity, String networkSSID, String networkPass)

@@ -4,11 +4,15 @@
     style="@style/modalFormLayout"
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <TextView
+        android:text="Inserir Comanda"
+        style="@style/modalTitle" />
+
     <com.google.android.material.textfield.TextInputLayout style="@style/matchParent">
 
         <EditText
             android:id="@+id/orderId"
-            android:hint="Numero da Comanda"
+            android:hint="Número"
             android:inputType="number"
             style="@style/modalText" />
 

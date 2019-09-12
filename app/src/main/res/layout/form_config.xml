@@ -4,6 +4,10 @@
     style="@style/modalFormLayout"
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <TextView
+        android:text="Configurar rede"
+        style="@style/modalTitle" />
+
     <com.google.android.material.textfield.TextInputLayout style="@style/matchParent">
 
         <EditText
@@ -41,15 +45,14 @@
         <EditText
             android:hint="Senha"
             android:id="@+id/pass"
-
+            android:inputType="textPassword"
             style="@style/modalText" />
-        <!--android:inputType="textPassword"-->
 
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <Button
-        android:id="@+id/networkConfigButton"
+        android:id="@+id/saveNetworkButton"
         style="@style/modalButton" />
 
 </LinearLayout>

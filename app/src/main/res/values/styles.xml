@@ -46,6 +46,13 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="modalTitle" parent="title">
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <style name="frame">
         <item name="android:background">@color/white</item>
         <item name="android:layout_width">0dp</item>
@@ -58,7 +65,7 @@
 
     <style name="modalFormLayout">
         <item name="android:visibility">gone</item>
-        <item name="android:padding">32dp</item>
+        <item name="android:paddingBottom">32dp</item>
         <item name="android:background">@color/white</item>
         <item name="android:orientation">vertical</item>
         <item name="android:layout_width">450dp</item>
@@ -120,13 +127,12 @@
 
     <style name="modalButton" parent="formButton">
         <item name="android:text">Confirmar</item>
-        <item name="android:background">@color/yellow</item>
     </style>
 
     <style name="modalText" >
         <item name="android:textSize">22sp</item>
-        <item name="android:paddingTop">16dp</item>
-        <item name="android:paddingBottom">16dp</item>
+        <item name="android:layout_marginLeft">32dp</item>
+        <item name="android:layout_marginRight">32dp</item>
         <item name="android:layout_marginBottom">16dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -159,7 +165,7 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">28sp</item>
+        <item name="android:textSize">32sp</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

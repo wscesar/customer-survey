@@ -21,12 +21,8 @@ import java.util.List;
 public class QuestionManager extends AppCompatActivity {
 
     private int color = Color.parseColor("#2d2d2d");
-    private int gray = Color.parseColor("#EEEEEE");
-
-    public int transparentColor = Color.parseColor("#00FFFFFF");
 
     public void showQuestion(int position, List<Question> questionList, Activity activity) {
-
 
         int questionNumber = position + 1;
 
@@ -38,7 +34,6 @@ public class QuestionManager extends AppCompatActivity {
 
         final Button nextButton = activity.findViewById(R.id.nextButton);
         nextButton.setVisibility(View.INVISIBLE);
-//        nextButton.setBackgroundColor(gray);
 
         RadioGroup rGroup = activity.findViewById(R.id.rGroup);
         rGroup.removeAllViews();
@@ -48,8 +43,6 @@ public class QuestionManager extends AppCompatActivity {
 
         for ( int i = 0; i < currentAlternatives.size(); i++ )
         {
-
-
             RadioButton rButton = new RadioButton( activity.getApplicationContext() );
             Alternative a = currentAlternatives.get(i);
 
@@ -57,18 +50,10 @@ public class QuestionManager extends AppCompatActivity {
             rButton.setTextSize( 26 );
             rButton.setTextColor(color);
             rButton.setPadding(32,16,32,16);
-            //                rButton.setButtonDrawable(R.color.gray);
 
             rButton.setHighlightColor(color);
 
-
-
-
             rButton.setLayoutParams(new RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT ));
-
-//            if(i%2 == 0){
-//                rButton.setBackgroundColor(gray);
-//            }
 
             radioButtons.add(rButton);
 
@@ -77,32 +62,15 @@ public class QuestionManager extends AppCompatActivity {
 
 
         for (final RadioButton r : radioButtons) {
-
-//            r.setTextSize(12);
-//            r.setBackgroundColor(transparentColor);
-
             r.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    r.setTextSize(12);
-
                     nextButton.setVisibility(View.VISIBLE);
-//
-//
-//                    for (RadioButton r : radioButtons) {
-//                        r.setBackgroundColor(transparentColor);
-//                    }
-
-//                    view.setBackgroundColor(color);
-//                    r.setBackgroundColor(color);
-//                    r.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 }
             });
         }
 
     }
-
-
 
     public Alternative getSelectedAlternative(int position, List<Question> questionList, RadioGroup rGroup, RadioButton rbSelected)
     {
@@ -114,6 +82,5 @@ public class QuestionManager extends AppCompatActivity {
 
         return a;
     }
-
 
 }
