@@ -1,5 +1,6 @@
 package com.bbi.pesquisa.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
+import com.bbi.pesquisa.model.ValidatedForm;
+import com.bbi.pesquisa.util.FormValidator;
 import com.bbi.pesquisa.util.UIManager;
 import com.bbi.pesquisa.util.Mask;
 
@@ -22,7 +25,7 @@ public class PersonalDataFragment extends Fragment {
 
     private Answer answer;
     private TextView inputDay, inputMonth;
-    private EditText inputName, inputEmail, inputCity, inputPhone;
+    private EditText inputName, inputEmail, inputCity, inputPhone, setFocusOn;
     private String name, phone, email, city, day, month, birthday;
     private LinearLayout birthdayPicker, alertLayout;
     private int hasToast;
@@ -35,20 +38,25 @@ public class PersonalDataFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private View fragmentView;
+    private Activity activity;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View fragmentView = inflater.inflate(R.layout.fragment_personal_data, container, false);
+        activity = getActivity();
 
-        birthdayPicker = getActivity().findViewById(R.id.birthdayPicker);
-        alertLayout = getActivity().findViewById(R.id.alertLayout);
+        fragmentView = inflater.inflate(R.layout.fragment_personal_data, container, false);
+
+        birthdayPicker = activity.findViewById(R.id.birthdayPicker);
+        alertLayout = activity.findViewById(R.id.alertLayout);
 
         Bundle bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
         hasToast =  bundle.getInt("hasToast", 0);
 
-        TextView headerTitle = getActivity().findViewById(R.id.title);
+        TextView headerTitle = activity.findViewById(R.id.title);
         headerTitle.setText("Dados para cadastro");
 
         inputName  = fragmentView.findViewById(R.id.inputName);
@@ -58,8 +66,8 @@ public class PersonalDataFragment extends Fragment {
         inputMonth = fragmentView.findViewById(R.id.inputMonth);
         inputDay   = fragmentView.findViewById(R.id.inputDay);
 
-        dayPicker   = getActivity().findViewById(R.id.np1);
-        monthPicker = getActivity().findViewById(R.id.np2);
+        dayPicker   = activity.findViewById(R.id.np1);
+        monthPicker = activity.findViewById(R.id.np2);
 
         dayPicker.setMinValue(1);
         dayPicker.setMaxValue(31);
@@ -72,37 +80,41 @@ public class PersonalDataFragment extends Fragment {
         inputDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UIManager.showModal(getActivity(), birthdayPicker);
+                UIManager.showModal(activity, birthdayPicker);
             }
         });
 
         inputMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UIManager.showModal(getActivity(), birthdayPicker);
+                UIManager.showModal(activity, birthdayPicker);
             }
         });
 
-
-
-        Button yesButton = getActivity().findViewById(R.id.yesButton);
+        Button yesButton = activity.findViewById(R.id.yesButton);
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UIManager.hideModal(getActivity());
+
+                if ( setFocusOn != null )
+                    UIManager.hideModal(activity, setFocusOn);
+
+                else
+                    UIManager.showModal(activity, birthdayPicker);
+
             }
         });
 
-        Button noButton = getActivity().findViewById(R.id.noButton);
+        Button noButton = activity.findViewById(R.id.noButton);
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UIManager.hideModal(getActivity());
-                UIManager.saveData(getActivity(), answer);
+                UIManager.hideModal(activity);
+                UIManager.saveData(activity, answer);
             }
         });
 
-        Button confirmBirthdayButton = getActivity().findViewById(R.id.confirmBirthday);
+        Button confirmBirthdayButton = activity.findViewById(R.id.confirmBirthday);
         confirmBirthdayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,8 +126,8 @@ public class PersonalDataFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UIManager.hideKeyboard(getActivity(), getContext(), view);
-                createAnswerObject();
+                UIManager.hideKeyboard(activity, view);
+                getAnswers();
             }
         });
 
@@ -129,71 +141,11 @@ public class PersonalDataFragment extends Fragment {
         inputDay.setText(String.valueOf(day));
         inputMonth.setText(String.valueOf(month));
 
-        UIManager.hideModal(getActivity());
+        UIManager.hideModal(activity);
     }
 
-    private void validateFields() {
 
-        if( name.length() > 0 && name.length() < 3 )
-        {
-            String message = "Informe um nome válido";
-            UIManager.showAlert(getActivity(), alertLayout, message, true);
-            UIManager.showFocusOn(getActivity(), inputName);
-        }
-        else if( phone.length() > 0 && phone.length() < 15 )
-        {
-            String message = "Informe um telefone válido";
-            UIManager.showAlert(getActivity(), alertLayout, message, true);
-            UIManager.showFocusOn(getActivity(), inputPhone);
-        }
-        else if( email.length() > 0 && !validateEmail(email))
-        {
-            String message = "Informe um email válido";
-            UIManager.showAlert(getActivity(), alertLayout, message, true);
-            UIManager.showFocusOn(getActivity(), inputEmail);
-        }
-        else if( city.length() > 0 && city.length() < 3 )
-        {
-            String message = "Informe uma cidade válida";
-            UIManager.showAlert(getActivity(), alertLayout, message, true);
-            UIManager.showFocusOn(getActivity(), inputCity);
-        }
-        else if( hasToast > 0
-                 && name.isEmpty()
-                 || phone.isEmpty()
-                 || email.isEmpty()
-                 || city.isEmpty()
-                 || day.isEmpty()
-                 || month.isEmpty() )
-        {
-            String message = "Pra receber seu brinde é necessario preencher todos os campos\nGostaria de terminar seu cadastro?";
-            UIManager.showAlert(getActivity(), alertLayout, message, false);
-        }
-        else
-        {
-            UIManager.saveData(getActivity(), answer);
-        }
-
-    }
-
-    private boolean validateEmail(String email) {
-        String[] arr = email.split("@");
-        String[] domain;
-
-        if( arr.length > 1 && arr[0].length() >= 3 ) {
-
-            domain = arr[1].split("\\.");
-
-            if( domain.length > 1 )
-                return true;
-
-        }
-
-        return false;
-
-    }
-
-    private void createAnswerObject() {
+    private void getAnswers(){
         name = inputName.getText().toString().trim();
         phone = inputPhone.getText().toString().trim();
         email = inputEmail.getText().toString().trim();
@@ -202,14 +154,38 @@ public class PersonalDataFragment extends Fragment {
         month = inputMonth.getText().toString();
         birthday = day + "/" + month;
 
+        createAnswerObject();
+
+    }
+
+    private void createAnswerObject() {
         answer.setName(name);
         answer.setPhone(phone);
         answer.setEmail(email);
         answer.setCity(city);
         answer.setBirthday(birthday);
 
-        validateFields();
+        saveAnswer();
+    }
 
+    private void saveAnswer() {
+        FormValidator formValidator = new FormValidator();
+
+        ValidatedForm validatedForm =
+                formValidator.validateFields(fragmentView, answer, hasToast);
+
+        String message = validatedForm.getMessage();
+        boolean changeButtons = validatedForm.isChangeButtons();
+        boolean readyToSave = validatedForm.isReadyToSave();
+        setFocusOn = validatedForm.getSetFocusOn();
+
+        if ( readyToSave ) {
+            UIManager.saveData(getActivity(), answer);
+        }
+
+        else {
+            UIManager.showAlert(activity, alertLayout, message, changeButtons);
+        }
     }
 
 }
