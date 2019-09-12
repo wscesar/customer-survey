@@ -44,7 +44,6 @@ public class GetLogoService extends IntentService {
                 try
                 {
                     String imageString = NetworkManager.method.ImageToBase64("//Pesquisa//logo_cliente.png", true);
-                    Log.d("getLogo", imageString);
 
                     byte[] byteArray = Base64.decode(imageString);
                     bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
@@ -61,7 +60,6 @@ public class GetLogoService extends IntentService {
                 catch ( Exception e )
                 {
                     Log.d("getLogoError", e.getMessage() );
-                    sendError(e.getMessage());
                 }
 
                 sendBitmap(bitmap);
@@ -71,14 +69,6 @@ public class GetLogoService extends IntentService {
         }
     }
 
-    private void sendError(String message) {
-        Intent intent = new Intent(ACTION);
-        intent.putExtra("bitmapError", message);
-        LocalBroadcastManager
-                .getInstance(getApplicationContext())
-                .sendBroadcast(intent);
-
-    }
 
     private void sendBitmap(Bitmap bitmap)
     {

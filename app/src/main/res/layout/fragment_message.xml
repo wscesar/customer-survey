@@ -22,7 +22,7 @@
 
         <Button
             android:id="@+id/finishButton"
-            android:text="Finalizar"
+            android:text="Voltar ao Inicio"
             android:layout_marginTop="32dp"
             android:visibility="gone"
             style="@style/formButton" />
