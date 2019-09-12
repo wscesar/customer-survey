@@ -41,12 +41,15 @@ public class UIManager {
 
         inputManager.showSoftInput(editText, 0);
 
-        editText.requestFocus();
-
-        inputManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        if ( editText != null ) {
+            editText.requestFocus();
+            inputManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
     }
 
-    public void hideKeyboard( Activity activity, Context context, View view ){
+    public void hideKeyboard( Activity activity,  View view ){
+        Context context = activity.getApplicationContext();
+
         InputMethodManager inputManager =
                 (InputMethodManager) activity.getSystemService(context.INPUT_METHOD_SERVICE);
 
@@ -100,12 +103,20 @@ public class UIManager {
         hideModalElements(activity);
     }
 
+    public void hideModal(Activity activity, EditText editText) {
+        LinearLayout modal = activity.findViewById(R.id.modal);
+        modal.setVisibility(View.GONE);
+        hideModalElements(activity);
+
+        showFocusOn(activity, editText);
+    }
+
     public void hideModal(Activity activity, View view) {
         LinearLayout modal = activity.findViewById(R.id.modal);
         modal.setVisibility(View.GONE);
 
         hideModalElements(activity);
-        hideKeyboard(activity, activity.getApplicationContext(), view);
+        hideKeyboard(activity, view);
     }
 
     public void hideModalElements(Activity activity) {

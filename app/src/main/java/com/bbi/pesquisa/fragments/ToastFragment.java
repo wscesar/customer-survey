@@ -37,14 +37,6 @@ public class ToastFragment extends Fragment {
         // Required empty public constructor
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        LocalBroadcastManager
-//                .getInstance(getActivity().getApplicationContext())
-//                .registerReceiver(paramReceiver, new IntentFilter("ParamService"));
-//    }
-
     private BroadcastReceiver paramReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -90,6 +82,11 @@ public class ToastFragment extends Fragment {
         headerTitle.setText(R.string.app_name);
 
         Button yesButton = fragmentView.findViewById(R.id.yesButton);
+        Button noButton = fragmentView.findViewById(R.id.noButton);
+
+        yesButton.setText("SIM");
+        noButton.setText("NÂO");
+
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,11 +94,9 @@ public class ToastFragment extends Fragment {
             }
         });
 
-        Button noButton = fragmentView.findViewById(R.id.noButton);
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                UIManager.showProgressBar(layout, progressBar);
                 UIManager.saveData(getActivity(), answer);
             }
         });

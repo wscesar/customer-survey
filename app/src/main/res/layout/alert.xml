@@ -12,7 +12,8 @@
     <TextView
         android:text="OOOPS!!!"
         style="@style/title"
-        android:paddingBottom="0dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
         />
 
     <TextView

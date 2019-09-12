@@ -18,6 +18,8 @@ public class OpinionFragment extends Fragment {
     private EditText customerOpinionInput;
     private View fragmentView;
 
+    private Button yesButton, noButton;
+
     public OpinionFragment() {
         // Required empty public constructor
     }
@@ -28,35 +30,50 @@ public class OpinionFragment extends Fragment {
         fragmentView = inflater.inflate(R.layout.fragment_curstomer_opinion, container, false);
 
         TextView headerTitle = getActivity().findViewById(R.id.title);
-        headerTitle.setText(R.string.app_name);
+        headerTitle.setText("Você gostaria de deixar algum comentário?");
 
         customerOpinionInput = fragmentView.findViewById(R.id.customerOpinionInput);
 
         UIManager.showFocusOn(getActivity(), customerOpinionInput);
 
-        Button saveCustomerOpinionButton = fragmentView.findViewById(R.id.saveCustomerOpinionButton);
-        saveCustomerOpinionButton.setOnClickListener(new View.OnClickListener() {
+        noButton = fragmentView.findViewById(R.id.noButton);
+        yesButton = fragmentView.findViewById(R.id.yesButton);
+
+        yesButton.setText("Enviar");
+        noButton.setText("Pular");
+
+        yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                saveCustomerOpinion(view);
+            }
+        });
 
-                UIManager.hideKeyboard(getActivity(), getContext(), view);
 
-                String customerOpinion = customerOpinionInput.getText().toString().trim();
-
-                Bundle bundle = getArguments();
-                Answer answer = (Answer) bundle.getSerializable("answer");
-                answer.setCustomerOpinion(customerOpinion);
-
-                Fragment fragment = new ToastFragment();
-                bundle.putSerializable("answer", answer);
-                fragment.setArguments(bundle);
-
-                getFragment(fragment);
-
+        noButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveCustomerOpinion(view);
             }
         });
 
         return fragmentView;
+    }
+
+    private void saveCustomerOpinion(View view){
+        UIManager.hideKeyboard(getActivity(), view);
+
+        String customerOpinion = customerOpinionInput.getText().toString().trim();
+
+        Bundle bundle = getArguments();
+        Answer answer = (Answer) bundle.getSerializable("answer");
+        answer.setCustomerOpinion(customerOpinion);
+
+        Fragment fragment = new ToastFragment();
+        bundle.putSerializable("answer", answer);
+        fragment.setArguments(bundle);
+
+        getFragment(fragment);
     }
 
     private void getFragment(Fragment fragment) {

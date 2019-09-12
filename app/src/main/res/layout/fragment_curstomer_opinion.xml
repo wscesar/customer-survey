@@ -14,24 +14,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="32dp"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            style="@style/formTextView"
-            android:text="Sua opinião:" />
+        <!--<TextView-->
+            <!--style="@style/formTextView"-->
+            <!--android:text="Sua opinião:" />-->
 
         <EditText
-            android:layout_marginTop="8dp"
             android:gravity="top"
             android:id="@+id/customerOpinionInput"
             android:layout_width="match_parent"
             android:layout_height="150dp" />
 
-        <Button
-            android:id="@+id/saveCustomerOpinionButton"
-            style="@style/formButton"
-            android:text="Enviar opinião" />
+        <!--<Button-->
+            <!--android:id="@+id/saveCustomerOpinionButton"-->
+            <!--style="@style/formButton"-->
+            <!--android:text="Enviar opinião" />-->
+
+        <include layout="@layout/yes_no_buttons" />
 
     </LinearLayout>
 
