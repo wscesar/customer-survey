@@ -70,7 +70,7 @@ public class SurveyFragment extends Fragment {
             if ( questionList.size() > 0 && mountQuestionList)
             {
                 questionManager.showQuestion(0, questionList, getActivity());
-                new UIManager().hideProgressBar(layout, progressBar);
+                new UIManager(getActivity()).hideProgressBar(layout, progressBar);
 
                 mountQuestionList = false;
             }
@@ -92,7 +92,7 @@ public class SurveyFragment extends Fragment {
         layout      =  fragmentView.findViewById(R.id.layout);
         progressBar = fragmentView.findViewById(R.id.progressBar);
 
-        new UIManager().showProgressBar(layout, progressBar);
+        new UIManager(getActivity()).showProgressBar(layout, progressBar);
 
         bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");

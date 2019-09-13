@@ -14,7 +14,7 @@ import com.bbi.pesquisa.model.Answer;
 import com.bbi.pesquisa.util.UIManager;
 
 public class OpinionFragment extends Fragment {
-    private UIManager UIManager = new UIManager();
+    private UIManager uiManager;
     private EditText customerOpinionInput;
 
     public OpinionFragment() {
@@ -26,12 +26,14 @@ public class OpinionFragment extends Fragment {
     {
         View fragmentView = inflater.inflate(R.layout.fragment_curstomer_opinion, container, false);
 
+        uiManager = new UIManager(getActivity());
+
         TextView headerTitle = getActivity().findViewById(R.id.title);
         headerTitle.setText("Você gostaria de deixar algum comentário?");
 
         customerOpinionInput = fragmentView.findViewById(R.id.customerOpinionInput);
 
-        UIManager.showFocusOn(getActivity(), customerOpinionInput);
+        uiManager.showFocusOn(customerOpinionInput);
 
         Button noButton = fragmentView.findViewById(R.id.noButton);
         Button yesButton = fragmentView.findViewById(R.id.yesButton);
@@ -57,7 +59,7 @@ public class OpinionFragment extends Fragment {
     }
 
     private void saveCustomerOpinion(View view){
-        UIManager.hideKeyboard(getActivity(), view);
+        uiManager.hideKeyboard(view);
 
         String customerOpinion = customerOpinionInput.getText().toString().trim();
 

@@ -131,7 +131,4 @@ public class NetworkManager extends SQLiteOpenHelper {
         db.delete(TABLE, COL_ID + "=?", id);
     }
 
-
-
-
 }

@@ -19,9 +19,9 @@ public class UIManager {
     private Activity activity;
     private Context context;
 
-    public UIManager() {
-
-    }
+//    public UIManager() {
+//
+//    }
 
     public UIManager(Activity activity) {
         this.activity = activity;
@@ -46,7 +46,7 @@ public class UIManager {
         progressBar.setVisibility(View.GONE);
     }
 
-    public void showFocusOn( Activity activity,  EditText editText ) {
+    public void showFocusOn( EditText editText ) {
         InputMethodManager inputManager =
                 (InputMethodManager) activity.getSystemService(activity.getApplicationContext().INPUT_METHOD_SERVICE);
 
@@ -58,7 +58,7 @@ public class UIManager {
         }
     }
 
-    public void hideKeyboard( Activity activity,  View view ){
+    public void hideKeyboard( View view ){
         Context context = activity.getApplicationContext();
 
         InputMethodManager inputManager =
@@ -68,7 +68,7 @@ public class UIManager {
     }
 
 
-    public void saveData(Activity activity, Answer answer) {
+    public void saveData(Answer answer) {
 
         LinearLayout layout = activity.findViewById(R.id.layout);
         ProgressBar progressBar= activity.findViewById(R.id.progressBar);
@@ -79,7 +79,7 @@ public class UIManager {
     }
 
 
-    public void showModal(Activity activity, LinearLayout modalElement) {
+    public void showModal(LinearLayout modalElement) {
         LinearLayout modal = activity.findViewById(R.id.modal);
 
         hideModalElements(activity);
@@ -87,7 +87,7 @@ public class UIManager {
         modalElement.setVisibility(View.VISIBLE);
     }
 
-    public void showAlert(Activity activity, LinearLayout modalElement, String message, boolean changeButtons) {
+    public void showAlert(LinearLayout modalElement, String message, boolean changeButtons) {
         hideModalElements(activity);
 
         LinearLayout modal = activity.findViewById(R.id.modal);
@@ -108,26 +108,26 @@ public class UIManager {
         alertMessage.setText(message);
     }
 
-    public void hideModal(Activity activity) {
+    public void hideModal() {
         LinearLayout modal = activity.findViewById(R.id.modal);
         modal.setVisibility(View.GONE);
         hideModalElements(activity);
     }
 
-    public void hideModal(Activity activity, EditText editText) {
+    public void hideModal(EditText editText) {
         LinearLayout modal = activity.findViewById(R.id.modal);
         modal.setVisibility(View.GONE);
         hideModalElements(activity);
 
-        showFocusOn(activity, editText);
+        showFocusOn(editText);
     }
 
-    public void hideModal(Activity activity, View view) {
+    public void hideModal(View view) {
         LinearLayout modal = activity.findViewById(R.id.modal);
         modal.setVisibility(View.GONE);
 
         hideModalElements(activity);
-        hideKeyboard(activity, view);
+        hideKeyboard(view);
     }
 
     public void hideModalElements(Activity activity) {

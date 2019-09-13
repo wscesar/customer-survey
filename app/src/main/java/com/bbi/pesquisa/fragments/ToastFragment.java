@@ -24,7 +24,7 @@ import com.bbi.pesquisa.model.Answer;
 import com.bbi.pesquisa.util.UIManager;
 
 public class ToastFragment extends Fragment {
-    private UIManager UIManager = new UIManager();
+    private UIManager uiManager;
     private View fragmentView;
 
     private Answer answer;
@@ -54,7 +54,7 @@ public class ToastFragment extends Fragment {
                 bundle.putInt("hasToast", 0);
             }
 
-            UIManager.hideProgressBar(layout, progressBar);
+            uiManager.hideProgressBar(layout, progressBar);
         }
     };
 
@@ -70,13 +70,15 @@ public class ToastFragment extends Fragment {
 
         fragmentView = inflater.inflate(R.layout.message, container, false);
 
+        uiManager = new UIManager(getActivity());
+
         bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
 
         layout      = fragmentView.findViewById(R.id.layout);
         progressBar = fragmentView.findViewById(R.id.progressBar);
 
-        UIManager.showProgressBar(layout, progressBar);
+        uiManager.showProgressBar(layout, progressBar);
 
         TextView headerTitle = getActivity().findViewById(R.id.title);
         headerTitle.setText(R.string.app_name);
@@ -97,8 +99,8 @@ public class ToastFragment extends Fragment {
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UIManager.showProgressBar(layout, progressBar);
-                UIManager.saveData(getActivity(), answer);
+                uiManager.showProgressBar(layout, progressBar);
+                uiManager.saveData(answer);
             }
         });
 

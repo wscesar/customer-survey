@@ -32,7 +32,7 @@ public class PersonalDataFragment extends Fragment {
     private Button yesButton, noButton, saveButton, confirmBirthdayButton;
     private EditText inputName, inputEmail, inputCity, inputPhone, setFocusOn;
 
-    private UIManager UIManager = new UIManager();
+    private UIManager uiManager;
 
     private NumberPicker dayPicker, monthPicker;
 
@@ -51,10 +51,11 @@ public class PersonalDataFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
         fragmentView = inflater.inflate(R.layout.fragment_personal_data, container, false);
 
         initGlobalVars();
+
+        uiManager = new UIManager(getActivity());
 
         bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
@@ -73,14 +74,14 @@ public class PersonalDataFragment extends Fragment {
         inputDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UIManager.showModal(activity, birthdayPicker);
+                uiManager.showModal(birthdayPicker);
             }
         });
 
         inputMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UIManager.showModal(activity, birthdayPicker);
+                uiManager.showModal(birthdayPicker);
             }
         });
 
@@ -88,9 +89,9 @@ public class PersonalDataFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if ( setFocusOn != null )
-                    UIManager.hideModal(activity, setFocusOn);
+                    uiManager.hideModal(setFocusOn);
                 else
-                    UIManager.showModal(activity, birthdayPicker);
+                    uiManager.showModal(birthdayPicker);
             }
         });
 
@@ -112,7 +113,7 @@ public class PersonalDataFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UIManager.hideKeyboard(activity, view);
+                uiManager.hideKeyboard(view);
                 getAnswers();
             }
         });
@@ -150,7 +151,7 @@ public class PersonalDataFragment extends Fragment {
         inputDay.setText(String.valueOf(day));
         inputMonth.setText(String.valueOf(month));
 
-        UIManager.hideModal(activity);
+        uiManager.hideModal();
     }
 
     private void getAnswers(){
@@ -192,7 +193,7 @@ public class PersonalDataFragment extends Fragment {
         }
 
         else {
-            UIManager.showAlert(activity, alertLayout, message, changeButtons);
+            uiManager.showAlert(alertLayout, message, changeButtons);
         }
     }
 
@@ -200,9 +201,9 @@ public class PersonalDataFragment extends Fragment {
         LinearLayout layout = fragmentView.findViewById(R.id.layout);
         ProgressBar progressBar = fragmentView.findViewById(R.id.progressBar);
 
-        UIManager.showProgressBar(layout, progressBar);
-        UIManager.hideModal(activity);
-        UIManager.saveData(activity, answer);
+        uiManager.showProgressBar(layout, progressBar);
+        uiManager.hideModal();
+        uiManager.saveData(answer);
     }
 
 }
