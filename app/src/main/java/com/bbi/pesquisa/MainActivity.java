@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         if ( !isConnected() || networkConfiguration != null && networkConfiguration.getId() != 1) {
             uiManager.showModal(configForm);
-            displayNetworkConfig();
+            displayNetworkConfiguration();
             frameLayout.setVisibility(View.GONE);
         } else {
             getLogo();
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         saveNetworkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveNetwork();
+                saveNetworkConfiguration();
                 uiManager.hideModal(view);
             }
         });
@@ -200,17 +200,17 @@ public class MainActivity extends AppCompatActivity {
         EditText authPassword = findViewById(R.id.authPassword);
         uiManager.showFocusOn(authPassword);
 
-        displayNetworkConfig();
+        displayNetworkConfiguration();
 
         if ( authPassword.getText().toString().trim().equals("") )
             uiManager.showModal(configForm);
         else
             uiManager.hideModal(view);
 
-        authPassword.setText("");
+        authPassword.setText(R.string.networkConfiguratationPassword);
     }
 
-    private void displayNetworkConfig() {
+    private void displayNetworkConfiguration() {
         NetworkConfiguration config = networkManager.getConfiguration();
         inputIp.setText( config.getIp() );
         inputPort.setText( String.valueOf(config.getPort()) );
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
         inputPass.setText( config.getPass() );
     }
 
-    private void saveNetwork() {
+    private void saveNetworkConfiguration() {
         String ip   = inputIp.getText().toString().trim();
         String ssid = inputSsid.getText().toString().trim();
         String pass = inputPass.getText().toString().trim();
@@ -282,9 +282,9 @@ public class MainActivity extends AppCompatActivity {
                     if (isLongPress) {
 
                         if(action.equals("showOrderForm"))
-                            showOrderForm();
+                            uiManager.showModal(orderForm, inputOrderId);
                         else
-                            showConfigForm();
+                            uiManager.showModal(authForm, authPassword);
                     }
                 }
 
@@ -294,16 +294,6 @@ public class MainActivity extends AppCompatActivity {
         {
             isLongPress = false;
         }
-    }
-
-    private void showOrderForm(){
-        uiManager.showModal(orderForm);
-        uiManager.showFocusOn(inputOrderId);
-    }
-
-    private void showConfigForm() {
-        uiManager.showModal(authForm);
-        uiManager.showFocusOn(authPassword);
     }
 
     private void getLogo() {

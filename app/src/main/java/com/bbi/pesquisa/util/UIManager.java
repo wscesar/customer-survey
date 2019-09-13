@@ -87,6 +87,16 @@ public class UIManager {
         modalElement.setVisibility(View.VISIBLE);
     }
 
+    public void showModal(LinearLayout modalElement, EditText editText) {
+        LinearLayout modal = activity.findViewById(R.id.modal);
+
+        hideModalElements(activity);
+        modal.setVisibility(View.VISIBLE);
+        modalElement.setVisibility(View.VISIBLE);
+
+        showFocusOn(editText);
+    }
+
     public void showAlert(LinearLayout modalElement, String message, boolean changeButtons) {
         hideModalElements(activity);
 
