@@ -16,7 +16,7 @@ public class WifiManager  {
         this.context = context;
     }
 
-    public boolean isWifiConnected(Context context ) {
+    public boolean isWifiConnected( Context context ) {
 
         ConnectivityManager connManager =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

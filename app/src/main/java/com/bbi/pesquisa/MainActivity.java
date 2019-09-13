@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
     private void initGlobalVars() {
         context = getApplicationContext();
 
+
         uiManager = new UIManager(MainActivity.this);
         wifiManager = new WifiManager(context);
 

@@ -41,9 +41,6 @@ public class PersonalDataFragment extends Fragment {
     }
 
     private View fragmentView;
-    private Activity activity;
-
-    private Bundle bundle;
 
     private TextView headerTitle;
 
@@ -57,7 +54,7 @@ public class PersonalDataFragment extends Fragment {
 
         uiManager = new UIManager(getActivity());
 
-        bundle = getArguments();
+        Bundle bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
         hasToast =  bundle.getInt("hasToast", 0);
 
@@ -122,7 +119,7 @@ public class PersonalDataFragment extends Fragment {
     }
 
     private void initGlobalVars() {
-        activity = getActivity();
+        Activity activity = getActivity();
 
         headerTitle = activity.findViewById(R.id.title);
 

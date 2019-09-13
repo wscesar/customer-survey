@@ -18,13 +18,14 @@ public class UIManager {
 
     private Activity activity;
     private Context context;
-
-    private LinearLayout modal = activity.findViewById(R.id.modal);
+    private LinearLayout modal;
 
     public UIManager(Activity activity) {
         this.activity = activity;
         this.context = activity.getApplicationContext();
+        this.modal = activity.findViewById(R.id.modal);
     }
+
 
     public void showProgressBar(ProgressBar progressBar) {
         progressBar.setVisibility(View.VISIBLE);
