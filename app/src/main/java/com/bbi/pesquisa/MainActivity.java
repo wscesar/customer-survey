@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,14 +34,13 @@ import com.bbi.pesquisa.util.WifiManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Activity activity;
     private Context context;
     private boolean isLongPress = false;
 
     private UIManager uiManager;
     private NetworkManager networkManager;
     private NetworkConfiguration networkConfiguration;
-    private WifiManager wifiManager = new WifiManager();
+    private WifiManager wifiManager;
 
     private ImageView logo;
     private ProgressBar progressBar;
@@ -163,10 +161,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initGlobalVars() {
-        activity = MainActivity.this;
         context = getApplicationContext();
 
-        uiManager = new UIManager(activity);
+        uiManager = new UIManager(MainActivity.this);
+        wifiManager = new WifiManager(context);
 
         frameLayout = findViewById(R.id.frameLayout);
 
@@ -225,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         int port = Integer.parseInt( inputPort.getText().toString().trim() );
 
         // try connect to wifi with new credentials
-        wifiManager.wifiConnect(activity, ssid, pass);
+        wifiManager.wifiConnect(ssid, pass);
 
         // insert or update local network configuration on sqlite database
         if ( networkConfiguration != null && networkConfiguration.getId() == 1 )

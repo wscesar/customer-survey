@@ -19,9 +19,7 @@ public class UIManager {
     private Activity activity;
     private Context context;
 
-//    public UIManager() {
-//
-//    }
+    private LinearLayout modal = activity.findViewById(R.id.modal);
 
     public UIManager(Activity activity) {
         this.activity = activity;
@@ -59,19 +57,16 @@ public class UIManager {
     }
 
     public void hideKeyboard( View view ){
-        Context context = activity.getApplicationContext();
-
         InputMethodManager inputManager =
                 (InputMethodManager) activity.getSystemService(context.INPUT_METHOD_SERVICE);
 
         inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-
     public void saveData(Answer answer) {
 
         LinearLayout layout = activity.findViewById(R.id.layout);
-        ProgressBar progressBar= activity.findViewById(R.id.progressBar);
+        ProgressBar progressBar = activity.findViewById(R.id.progressBar);
         showProgressBar(layout, progressBar);
 
         SaveDataService service = new SaveDataService();
@@ -80,15 +75,12 @@ public class UIManager {
 
 
     public void showModal(LinearLayout modalElement) {
-        LinearLayout modal = activity.findViewById(R.id.modal);
-
         hideModalElements(activity);
         modal.setVisibility(View.VISIBLE);
         modalElement.setVisibility(View.VISIBLE);
     }
 
     public void showModal(LinearLayout modalElement, EditText editText) {
-        LinearLayout modal = activity.findViewById(R.id.modal);
 
         hideModalElements(activity);
         modal.setVisibility(View.VISIBLE);
@@ -100,7 +92,6 @@ public class UIManager {
     public void showAlert(LinearLayout modalElement, String message, boolean changeButtons) {
         hideModalElements(activity);
 
-        LinearLayout modal = activity.findViewById(R.id.modal);
         Button noButton = activity.findViewById(R.id.noButton);
         Button yesButton = activity.findViewById(R.id.yesButton);
         TextView alertMessage = activity.findViewById(R.id.alertMessage);
@@ -119,13 +110,11 @@ public class UIManager {
     }
 
     public void hideModal() {
-        LinearLayout modal = activity.findViewById(R.id.modal);
         modal.setVisibility(View.GONE);
         hideModalElements(activity);
     }
 
     public void hideModal(EditText editText) {
-        LinearLayout modal = activity.findViewById(R.id.modal);
         modal.setVisibility(View.GONE);
         hideModalElements(activity);
 
@@ -133,14 +122,13 @@ public class UIManager {
     }
 
     public void hideModal(View view) {
-        LinearLayout modal = activity.findViewById(R.id.modal);
         modal.setVisibility(View.GONE);
-
         hideModalElements(activity);
+
         hideKeyboard(view);
     }
 
-    public void hideModalElements(Activity activity) {
+    private void hideModalElements(Activity activity) {
         LinearLayout authForm   = activity.findViewById(R.id.authForm);
         LinearLayout orderForm  = activity.findViewById(R.id.orderForm);
         LinearLayout configForm = activity.findViewById(R.id.configForm);
