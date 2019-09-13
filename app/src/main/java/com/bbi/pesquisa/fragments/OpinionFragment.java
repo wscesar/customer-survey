@@ -16,9 +16,6 @@ import com.bbi.pesquisa.util.UIManager;
 public class OpinionFragment extends Fragment {
     private UIManager UIManager = new UIManager();
     private EditText customerOpinionInput;
-    private View fragmentView;
-
-    private Button yesButton, noButton;
 
     public OpinionFragment() {
         // Required empty public constructor
@@ -27,7 +24,7 @@ public class OpinionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        fragmentView = inflater.inflate(R.layout.fragment_curstomer_opinion, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_curstomer_opinion, container, false);
 
         TextView headerTitle = getActivity().findViewById(R.id.title);
         headerTitle.setText("Você gostaria de deixar algum comentário?");
@@ -36,8 +33,8 @@ public class OpinionFragment extends Fragment {
 
         UIManager.showFocusOn(getActivity(), customerOpinionInput);
 
-        noButton = fragmentView.findViewById(R.id.noButton);
-        yesButton = fragmentView.findViewById(R.id.yesButton);
+        Button noButton = fragmentView.findViewById(R.id.noButton);
+        Button yesButton = fragmentView.findViewById(R.id.yesButton);
 
         yesButton.setText("Enviar");
         noButton.setText("Pular");
@@ -48,7 +45,6 @@ public class OpinionFragment extends Fragment {
                 saveCustomerOpinion(view);
             }
         });
-
 
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override

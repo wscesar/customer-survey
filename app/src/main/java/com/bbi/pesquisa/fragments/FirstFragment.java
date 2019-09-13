@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
 
-public class PromptFragment extends Fragment {
+public class FirstFragment extends Fragment {
     private Bundle bundle = new Bundle();
     private Answer answer = new Answer();
 
@@ -28,7 +28,7 @@ public class PromptFragment extends Fragment {
 
     private InputMethodManager inputManager;
 
-    public PromptFragment() {
+    public FirstFragment() {
         // Required empty public constructor
     }
 
@@ -83,7 +83,6 @@ public class PromptFragment extends Fragment {
 
         answer.setOrderId(orderId);
 
-//        setBundle(new OpinionFragment());
         setBundle(new SurveyFragment());
     }
 

@@ -24,12 +24,13 @@ import com.bbi.pesquisa.util.Mask;
 
 public class PersonalDataFragment extends Fragment {
 
+    private int hasToast;
     private Answer answer;
     private TextView inputDay, inputMonth;
-    private EditText inputName, inputEmail, inputCity, inputPhone, setFocusOn;
-    private String name, phone, email, city, day, month, birthday;
     private LinearLayout birthdayPicker, alertLayout;
-    private int hasToast;
+    private String name, phone, email, city, day, month, birthday;
+    private Button yesButton, noButton, saveButton, confirmBirthdayButton;
+    private EditText inputName, inputEmail, inputCity, inputPhone, setFocusOn;
 
     private UIManager UIManager = new UIManager();
 
@@ -42,33 +43,24 @@ public class PersonalDataFragment extends Fragment {
     private View fragmentView;
     private Activity activity;
 
+    private Bundle bundle;
+
+    private TextView headerTitle;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        activity = getActivity();
 
         fragmentView = inflater.inflate(R.layout.fragment_personal_data, container, false);
 
-        birthdayPicker = activity.findViewById(R.id.birthdayPicker);
-        alertLayout = activity.findViewById(R.id.alertLayout);
+        initGlobalVars();
 
-        Bundle bundle = getArguments();
+        bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
         hasToast =  bundle.getInt("hasToast", 0);
 
-        TextView headerTitle = activity.findViewById(R.id.title);
         headerTitle.setText("Dados para cadastro");
-
-        inputName  = fragmentView.findViewById(R.id.inputName);
-        inputPhone = fragmentView.findViewById(R.id.inputPhone);
-        inputEmail = fragmentView.findViewById(R.id.inputEmail);
-        inputCity  = fragmentView.findViewById(R.id.inputCity);
-        inputMonth = fragmentView.findViewById(R.id.inputMonth);
-        inputDay   = fragmentView.findViewById(R.id.inputDay);
-
-        dayPicker   = activity.findViewById(R.id.np1);
-        monthPicker = activity.findViewById(R.id.np2);
 
         dayPicker.setMinValue(1);
         dayPicker.setMaxValue(31);
@@ -92,21 +84,16 @@ public class PersonalDataFragment extends Fragment {
             }
         });
 
-        Button yesButton = activity.findViewById(R.id.yesButton);
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if ( setFocusOn != null )
                     UIManager.hideModal(activity, setFocusOn);
-
                 else
                     UIManager.showModal(activity, birthdayPicker);
-
             }
         });
 
-        Button noButton = activity.findViewById(R.id.noButton);
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,7 +101,6 @@ public class PersonalDataFragment extends Fragment {
             }
         });
 
-        Button confirmBirthdayButton = activity.findViewById(R.id.confirmBirthday);
         confirmBirthdayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,7 +108,7 @@ public class PersonalDataFragment extends Fragment {
             }
         });
 
-        Button saveButton = fragmentView.findViewById(R.id.savePersonalData);
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,6 +118,29 @@ public class PersonalDataFragment extends Fragment {
         });
 
         return fragmentView;
+    }
+
+    private void initGlobalVars() {
+        activity = getActivity();
+
+        headerTitle = activity.findViewById(R.id.title);
+
+        alertLayout    = activity.findViewById(R.id.alertLayout);
+        dayPicker      = activity.findViewById(R.id.np1);
+        monthPicker    = activity.findViewById(R.id.np2);
+        birthdayPicker = activity.findViewById(R.id.birthdayPicker);
+
+        yesButton  = activity.findViewById(R.id.yesButton);
+        noButton   = activity.findViewById(R.id.noButton);
+        saveButton = fragmentView.findViewById(R.id.savePersonalData);
+        confirmBirthdayButton = activity.findViewById(R.id.confirmBirthday);
+
+        inputName  = fragmentView.findViewById(R.id.inputName);
+        inputPhone = fragmentView.findViewById(R.id.inputPhone);
+        inputEmail = fragmentView.findViewById(R.id.inputEmail);
+        inputCity  = fragmentView.findViewById(R.id.inputCity);
+        inputMonth = fragmentView.findViewById(R.id.inputMonth);
+        inputDay   = fragmentView.findViewById(R.id.inputDay);
     }
 
     private void confirmBirthday() {

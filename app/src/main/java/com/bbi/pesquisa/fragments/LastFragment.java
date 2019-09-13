@@ -45,7 +45,7 @@ public class LastFragment extends Fragment {
             public void onClick(View view) {
                 getFragmentManager()
                         .beginTransaction()
-                        .replace( R.id.frameLayout, new PromptFragment() )
+                        .replace( R.id.frameLayout, new FirstFragment() )
                         .commit();
             }
         });

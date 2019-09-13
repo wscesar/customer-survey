@@ -25,7 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bbi.pesquisa.fragments.LastFragment;
-import com.bbi.pesquisa.fragments.PromptFragment;
+import com.bbi.pesquisa.fragments.FirstFragment;
 import com.bbi.pesquisa.model.NetworkConfiguration;
 import com.bbi.pesquisa.services.GetLogoService;
 import com.bbi.pesquisa.util.UIManager;
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isLongPress = false;
 
     private NetworkManager networkManager;
-    private UIManager UIManager;//private UIManager UIManager = new UIManager();
+    private UIManager uiManager;//private uiManager uiManager = new uiManager();
     private WifiManager wifiManager = new WifiManager();
 
     private ImageView logo;
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout authForm, configForm, orderForm;
     private FrameLayout frameLayout;
 
-    private NetworkConfiguration network;
+    private NetworkConfiguration networkConfiguration;
 
     private BroadcastReceiver idReceiver = new BroadcastReceiver() {
         @Override
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
             if ( bitmap != null ){
                 logo.setImageBitmap(bitmap);
-                UIManager.hideProgressBar(progressBar);
+                uiManager.hideProgressBar(progressBar);
                 showContent();
             }
         }
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onStart();
 
-        if ( network != null ) {
+        if ( networkConfiguration != null ) {
             LocalBroadcastManager
                     .getInstance(context)
                     .registerReceiver(idReceiver, new IntentFilter("SaveDataService"));
@@ -99,8 +99,6 @@ public class MainActivity extends AppCompatActivity {
         // do nothing
     }
 
-
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -109,37 +107,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
+        initGlobalVars();
 
-
-        activity = MainActivity.this;
-        context = getApplicationContext();
-
-        UIManager = new UIManager(activity);
-
-        frameLayout = findViewById(R.id.frameLayout);
-
-        // init global vars
-        logo        = findViewById(R.id.logo);
-
-        // init order form
-        orderForm    = findViewById(R.id.orderForm);
-        inputOrderId = findViewById(R.id.orderId);
-
-        // init network configuration form
-        authForm   = findViewById(R.id.authForm);
-        configForm = findViewById(R.id.configForm);
-        inputIp    = findViewById(R.id.ip);
-        inputPort  = findViewById(R.id.port);
-        inputSsid  = findViewById(R.id.ssid);
-        inputPass  = findViewById(R.id.pass);
-
-        progressBar = findViewById(R.id.progressBar);
-
-        networkManager = new NetworkManager(this);
-        network = networkManager.getConfiguration();
-
-        if ( !isConnected() || network != null && network.getId() != 1) {
-            UIManager.showModal(activity, configForm);
+        if ( !isConnected() || networkConfiguration != null && networkConfiguration.getId() != 1) {
+            uiManager.showModal(activity, configForm);
             displayNetworkConfig();
             frameLayout.setVisibility(View.GONE);
         } else {
@@ -160,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         modal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UIManager.hideModal(activity, view);
+                uiManager.hideModal(activity, view);
             }
         });
 
@@ -174,7 +145,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button authButton = findViewById(R.id.authButton);
+        Button authButton, saveNetworkButton;
+
+        authButton = findViewById(R.id.authButton);
         authButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -183,33 +156,59 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        Button saveNetworkButton = findViewById(R.id.saveNetworkButton);
+        saveNetworkButton = findViewById(R.id.saveNetworkButton);
         saveNetworkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveNetwork();
-                UIManager.hideModal(activity, view);
+                uiManager.hideModal(activity, view);
             }
         });
 
-        getFragment( new PromptFragment() );
+        getFragment( new FirstFragment() );
     }
 
+    private void initGlobalVars() {
+        activity = MainActivity.this;
+        context = getApplicationContext();
+
+        uiManager = new UIManager(activity);
+
+        frameLayout = findViewById(R.id.frameLayout);
+
+        logo        = findViewById(R.id.logo);
+
+        // init order form
+        orderForm    = findViewById(R.id.orderForm);
+        inputOrderId = findViewById(R.id.orderId);
+
+        // init networkConfiguration configuration form
+        authForm   = findViewById(R.id.authForm);
+        configForm = findViewById(R.id.configForm);
+        inputIp    = findViewById(R.id.ip);
+        inputPort  = findViewById(R.id.port);
+        inputSsid  = findViewById(R.id.ssid);
+        inputPass  = findViewById(R.id.pass);
+
+        progressBar = findViewById(R.id.progressBar);
+
+        networkManager = new NetworkManager(this);
+        networkConfiguration = networkManager.getConfiguration();
+    }
 
     private void authUser(View view) {
         EditText authPassword = findViewById(R.id.authPassword);
-        UIManager.showFocusOn(activity, authPassword);
+        uiManager.showFocusOn(activity, authPassword);
 
         displayNetworkConfig();
 
         if ( authPassword.getText().toString().trim().equals("") )
-            UIManager.showModal(activity, configForm);
+            uiManager.showModal(activity, configForm);
         else
-            UIManager.hideModal(activity, view);
+            uiManager.hideModal(activity, view);
 
         authPassword.setText("");
     }
-
 
     private void displayNetworkConfig() {
         NetworkConfiguration config = networkManager.getConfiguration();
@@ -218,7 +217,6 @@ public class MainActivity extends AppCompatActivity {
         inputSsid.setText( config.getSsid() );
         inputPass.setText( config.getPass() );
     }
-
 
     private void saveNetwork() {
         String ip   = inputIp.getText().toString().trim();
@@ -229,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         // try connect to wifi with new credentials
         wifiManager.wifiConnect(activity, ssid, pass);
 
-        UIManager.showProgressBar(progressBar);
+        uiManager.showProgressBar(progressBar);
 
         // wait 3s and verify connection
         new android.os.Handler().postDelayed( new Runnable() {
@@ -238,17 +236,17 @@ public class MainActivity extends AppCompatActivity {
                     getLogo();
                 } else {
                     Toast.makeText(context, "Erro ao Conectar!", Toast.LENGTH_SHORT).show();
-                    UIManager.hideProgressBar(progressBar);
-                    UIManager.showModal(activity, configForm);
+                    uiManager.hideProgressBar(progressBar);
+                    uiManager.showModal(activity, configForm);
                 }
 
             }
         },3000);
 
-        if ( network != null && network.getId() == 1 )
+        if ( networkConfiguration != null && networkConfiguration.getId() == 1 )
             networkManager.updateConfiguration(ip, port, ssid, pass);
 
-        else if ( network != null )
+        else if ( networkConfiguration != null )
             networkManager.insertConfiguration(ip, port, ssid, pass);
     }
 
@@ -295,14 +293,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showOrderForm(){
-        UIManager.showModal(activity, orderForm);
-        UIManager.showFocusOn(activity, inputOrderId);
+        uiManager.showModal(activity, orderForm);
+        uiManager.showFocusOn(activity, inputOrderId);
     }
 
     private void showConfigForm() {
         EditText authPassword = findViewById(R.id.authPassword);
-        UIManager.showModal(activity, authForm);
-        UIManager.showFocusOn(activity, authPassword);
+        uiManager.showModal(activity, authForm);
+        uiManager.showFocusOn(activity, authPassword);
     }
 
     private void getLogo() {
