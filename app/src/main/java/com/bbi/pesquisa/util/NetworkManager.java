@@ -1,25 +1,16 @@
 package com.bbi.pesquisa.util;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
-import com.embarcadero.javaandroid.ConnectionFactory;
+import com.embarcadero.android.ConnectionFactory;
 import com.bbi.pesquisa.model.NetworkConfiguration;
-import com.embarcadero.javaandroid.DSProxy;
-import com.embarcadero.javaandroid.DSRESTConnection;
-
-import static android.content.Context.WIFI_SERVICE;
+import com.embarcadero.android.DSProxy;
+import com.embarcadero.android.DSRESTConnection;
 
 public class NetworkManager extends SQLiteOpenHelper {
     public static DSProxy.TSvrMethod method;

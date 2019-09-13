@@ -10,7 +10,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.bbi.pesquisa.model.Alternative;
 import com.bbi.pesquisa.model.Question;
 import com.bbi.pesquisa.util.NetworkManager;
-import com.embarcadero.javaandroid.TDBXReader;
+import com.embarcadero.android.TDBXReader;
 
 import java.io.Serializable;
 import java.util.ArrayList;

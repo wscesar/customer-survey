@@ -10,9 +10,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.bbi.pesquisa.model.Alternative;
 import com.bbi.pesquisa.model.Answer;
 import com.bbi.pesquisa.util.NetworkManager;
-import com.embarcadero.javaandroid.DAOComponent;
-import com.embarcadero.javaandroid.DBXException;
-import com.embarcadero.javaandroid.SqlCommandBuilder;
+import com.embarcadero.android.DAOComponent;
+import com.embarcadero.android.DBXException;
+import com.embarcadero.android.SqlCommandBuilder;
 
 import java.util.List;
 

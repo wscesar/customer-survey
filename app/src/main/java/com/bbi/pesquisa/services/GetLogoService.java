@@ -11,7 +11,7 @@ import android.util.Log;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.bbi.pesquisa.util.NetworkManager;
-import com.embarcadero.javaandroid.Base64;
+import com.embarcadero.android.Base64;
 
 import java.io.File;
 import java.io.FileOutputStream;

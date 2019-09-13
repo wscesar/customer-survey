@@ -7,9 +7,9 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.embarcadero.javaandroid.DAOComponent;
-import com.embarcadero.javaandroid.SqlCommandBuilder;
-import com.embarcadero.javaandroid.TDBXReader;
+import com.embarcadero.android.DAOComponent;
+import com.embarcadero.android.SqlCommandBuilder;
+import com.embarcadero.android.TDBXReader;
 
 
 public class ParamService extends IntentService {
