@@ -35,7 +35,7 @@ public class PromptFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View fragmentView = inflater.inflate(R.layout.fragment_message, container, false);
+        View fragmentView = inflater.inflate(R.layout.message, container, false);
 
         message = fragmentView.findViewById(R.id.message);
         message.setText(R.string.welcome);
@@ -94,6 +94,7 @@ public class PromptFragment extends Fragment {
     }
 
     private void getFragment(Fragment fragment) {
+        inputOrderId.setText("");
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace( R.id.frameLayout, fragment )

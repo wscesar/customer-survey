@@ -21,27 +21,37 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.bbi.pesquisa.fragments.LastFragment;
 import com.bbi.pesquisa.fragments.PromptFragment;
 import com.bbi.pesquisa.model.NetworkConfiguration;
+import com.bbi.pesquisa.services.GetLogoService;
 import com.bbi.pesquisa.util.UIManager;
 import com.bbi.pesquisa.util.NetworkManager;
+import com.bbi.pesquisa.util.WifiManager;
 
 
 public class MainActivity extends AppCompatActivity {
-    boolean isLongPress = false;
 
-    private UIManager UIManager = new UIManager();
+    private Activity activity;
+    private Context context;
+
+    private ProgressBar progressBar;
+
+    private boolean isLongPress = false;
 
     private NetworkManager networkManager;
+    private UIManager UIManager;//private UIManager UIManager = new UIManager();
+    private WifiManager wifiManager = new WifiManager();
 
     private ImageView logo;
 
     private EditText inputOrderId, inputIp, inputPort, inputSsid, inputPass;
 
     private LinearLayout authForm, configForm, orderForm;
-    private FrameLayout mainLayout;
+    private FrameLayout frameLayout;
 
     private NetworkConfiguration network;
 
@@ -60,8 +70,11 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             Bitmap bitmap = intent.getParcelableExtra("bitmap");
 
-            if ( bitmap != null )
+            if ( bitmap != null ){
                 logo.setImageBitmap(bitmap);
+                UIManager.hideProgressBar(progressBar);
+                showContent();
+            }
         }
     };
 
@@ -72,11 +85,11 @@ public class MainActivity extends AppCompatActivity {
 
         if ( network != null ) {
             LocalBroadcastManager
-                    .getInstance(getApplicationContext())
+                    .getInstance(context)
                     .registerReceiver(idReceiver, new IntentFilter("SaveDataService"));
 
             LocalBroadcastManager
-                    .getInstance(getApplicationContext())
+                    .getInstance(context)
                     .registerReceiver(bitmapReceiver, new IntentFilter("GetLogoService"));
         }
     }
@@ -86,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
         // do nothing
     }
 
-    Activity activity;
-//    long then = 0;
+
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -96,9 +109,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-        activity = MainActivity.this;
 
-        mainLayout = findViewById(R.id.frameLayout);
+
+        activity = MainActivity.this;
+        context = getApplicationContext();
+
+        UIManager = new UIManager(activity);
+
+        frameLayout = findViewById(R.id.frameLayout);
 
         // init global vars
         logo        = findViewById(R.id.logo);
@@ -115,45 +133,24 @@ public class MainActivity extends AppCompatActivity {
         inputSsid  = findViewById(R.id.ssid);
         inputPass  = findViewById(R.id.pass);
 
+        progressBar = findViewById(R.id.progressBar);
+
         networkManager = new NetworkManager(this);
         network = networkManager.getConfiguration();
 
-        boolean isConnected = networkManager.isConnected(getApplicationContext());
-
-        if ( !isConnected || network != null && network.getId() != 1) {
+        if ( !isConnected() || network != null && network.getId() != 1) {
             UIManager.showModal(activity, configForm);
             displayNetworkConfig();
-            mainLayout.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.GONE);
         } else {
-            UIManager.getLogo(getApplicationContext());
+            getLogo();
         }
 
 
         logo.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
-                if(event.getAction() == MotionEvent.ACTION_DOWN)
-                {
-                    isLongPress = true;
-                    new Handler().postDelayed(new Runnable()
-                    {
-
-                        @Override
-                        public void run() {
-                            if (isLongPress) {
-                                UIManager.showModal(activity, orderForm);
-                                UIManager.showFocusOn(activity, inputOrderId);
-                            }
-                        }
-
-                    }, 3000);
-                }
-                else if ( event.getAction() == MotionEvent.ACTION_UP )
-                {
-                    isLongPress = false;
-                }
-
+                longClick(event, "showOrderForm");
                 return true;
             }
         });
@@ -167,14 +164,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         LinearLayout logo_bbi = findViewById(R.id.footer);
-        logo_bbi.setOnLongClickListener(new View.OnLongClickListener() {
+        logo_bbi.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onLongClick(View view) {
-                EditText authPassword = findViewById(R.id.authPassword);
-                UIManager.showModal(activity, authForm);
-                UIManager.showFocusOn(activity, authPassword);
-                return false;
+            public boolean onTouch(View v, MotionEvent event) {
+                longClick(event, "showConfigForm");
+                return true;
             }
         });
 
@@ -196,9 +192,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         getFragment( new PromptFragment() );
     }
+
 
     private void authUser(View view) {
         EditText authPassword = findViewById(R.id.authPassword);
@@ -214,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
         authPassword.setText("");
     }
 
+
     private void displayNetworkConfig() {
         NetworkConfiguration config = networkManager.getConfiguration();
         inputIp.setText( config.getIp() );
@@ -222,25 +219,31 @@ public class MainActivity extends AppCompatActivity {
         inputPass.setText( config.getPass() );
     }
 
+
     private void saveNetwork() {
         String ip   = inputIp.getText().toString().trim();
         String ssid = inputSsid.getText().toString().trim();
         String pass = inputPass.getText().toString().trim();
         int port = Integer.parseInt( inputPort.getText().toString().trim() );
 
-        // try connect with new credentials
-        boolean connected = networkManager.wifiConnect(activity, ssid, pass);
+        // try connect to wifi with new credentials
+        wifiManager.wifiConnect(activity, ssid, pass);
 
-        if (connected) {
+        UIManager.showProgressBar(progressBar);
 
-            mainLayout.setVisibility(View.VISIBLE);
+        // wait 3s and verify connection
+        new android.os.Handler().postDelayed( new Runnable() {
+            public void run() {
+                if ( isConnected() ) {
+                    getLogo();
+                } else {
+                    Toast.makeText(context, "Erro ao Conectar!", Toast.LENGTH_SHORT).show();
+                    UIManager.hideProgressBar(progressBar);
+                    UIManager.showModal(activity, configForm);
+                }
 
-            boolean isConnected = networkManager.isConnected(getApplicationContext());
-
-            if ( isConnected )
-                UIManager.getLogo(getApplicationContext());
-
-        }
+            }
+        },3000);
 
         if ( network != null && network.getId() == 1 )
             networkManager.updateConfiguration(ip, port, ssid, pass);
@@ -249,11 +252,62 @@ public class MainActivity extends AppCompatActivity {
             networkManager.insertConfiguration(ip, port, ssid, pass);
     }
 
+    private boolean isConnected() {
+        return wifiManager.isWifiConnected(context);
+    }
+
+    private void showContent() {
+        Toast.makeText(context, "Conectado!", Toast.LENGTH_SHORT).show();
+        frameLayout.setVisibility(View.VISIBLE);
+    }
+
     private void getFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace( R.id.frameLayout, fragment )
                 .commit();
+    }
+
+    private void longClick (MotionEvent event, final String action ) {
+        if(event.getAction() == MotionEvent.ACTION_DOWN)
+        {
+            isLongPress = true;
+            new Handler().postDelayed(new Runnable()
+            {
+
+                @Override
+                public void run() {
+                    if (isLongPress) {
+
+                        if(action.equals("showOrderForm"))
+                            showOrderForm();
+                        else
+                            showConfigForm();
+                    }
+                }
+
+            }, 3000);
+        }
+        else if ( event.getAction() == MotionEvent.ACTION_UP )
+        {
+            isLongPress = false;
+        }
+    }
+
+    private void showOrderForm(){
+        UIManager.showModal(activity, orderForm);
+        UIManager.showFocusOn(activity, inputOrderId);
+    }
+
+    private void showConfigForm() {
+        EditText authPassword = findViewById(R.id.authPassword);
+        UIManager.showModal(activity, authForm);
+        UIManager.showFocusOn(activity, authPassword);
+    }
+
+    private void getLogo() {
+        GetLogoService service = new GetLogoService();
+        service.start(context);
     }
 
 

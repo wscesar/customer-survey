@@ -10,19 +10,30 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
-
-import com.bbi.pesquisa.MainActivity;
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
-import com.bbi.pesquisa.services.GetLogoService;
 import com.bbi.pesquisa.services.SaveDataService;
 
 public class UIManager {
 
-    public void getLogo(Context context) {
-        GetLogoService service = new GetLogoService();
-        service.start(context);
+    private Activity activity;
+    private Context context;
+
+    public UIManager() {
+
+    }
+
+    public UIManager(Activity activity) {
+        this.activity = activity;
+        this.context = activity.getApplicationContext();
+    }
+
+    public void showProgressBar(ProgressBar progressBar) {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgressBar(ProgressBar progressBar) {
+        progressBar.setVisibility(View.GONE);
     }
 
     public void showProgressBar(LinearLayout layout, ProgressBar progressBar) {

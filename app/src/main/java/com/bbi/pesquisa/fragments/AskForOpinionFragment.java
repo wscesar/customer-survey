@@ -37,7 +37,7 @@ public class AskForOpinionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View fragmentView = inflater.inflate(R.layout.fragment_message, container, false);
+        View fragmentView = inflater.inflate(R.layout.message, container, false);
 
         TextView headerTitle = getActivity().findViewById(R.id.title);
         headerTitle.setText(R.string.app_name);

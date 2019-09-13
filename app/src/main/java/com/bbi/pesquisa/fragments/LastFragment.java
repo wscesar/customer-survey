@@ -22,7 +22,7 @@ public class LastFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View fragmentView = inflater.inflate(R.layout.fragment_message, container, false);
+        View fragmentView = inflater.inflate(R.layout.message, container, false);
 
         ProgressBar progressBar = fragmentView.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);

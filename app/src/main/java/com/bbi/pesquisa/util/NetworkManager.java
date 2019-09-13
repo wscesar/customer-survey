@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.embarcadero.javaandroid.ConnectionFactory;
@@ -131,54 +132,6 @@ public class NetworkManager extends SQLiteOpenHelper {
     }
 
 
-    public boolean isConnected(Context context) {
-        ConnectivityManager connManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        return wifi.isConnected();
-
-    }
-
-    public boolean wifiConnect(Activity activity, String networkSSID, String networkPass)
-    {
-        Context context = activity.getApplicationContext();
-
-        /* Cria um objeto com os dados da conexão wifi do aparelho */
-        android.net.wifi.WifiManager wm = (WifiManager) context.getSystemService(WIFI_SERVICE);
-        wm.setWifiEnabled(true);
-
-        /* Cria configuração do Wireless */
-        WifiConfiguration wifiConfig = new WifiConfiguration();
-        wifiConfig.SSID = "\"".concat(networkSSID).concat("\"");
-        wifiConfig.status = WifiConfiguration.Status.DISABLED;
-        wifiConfig.priority = 40;
-
-        /* WPA/WPA2 Security */
-        wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-        wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
-        wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-        wifiConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-        wifiConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
-        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
-        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-        wifiConfig.preSharedKey = "\"".concat(networkPass).concat("\"");
-
-        /* Adiciona a rede Wireless */
-        int networkID = wm.addNetwork(wifiConfig);
-
-        /* Conecta a rede Wireless, caso falhe, exibe uma mensagem de erro. */
-        if(!wm.enableNetwork(networkID, true)) {
-            Toast.makeText(context, "Erro ao conectar", Toast.LENGTH_SHORT).show();
-            return false;
-        } else {
-            Toast.makeText(context, "Conectando...", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-    }
 
 }

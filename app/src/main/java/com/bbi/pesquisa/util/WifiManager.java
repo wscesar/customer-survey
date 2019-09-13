@@ -1,133 +1,69 @@
 package com.bbi.pesquisa.util;
 
-import android.content.ContentValues;
+
+import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiConfiguration;
+import android.widget.Toast;
 
-import com.bbi.pesquisa.model.NetworkConfiguration;
-import com.embarcadero.javaandroid.ConnectionFactory;
-import com.embarcadero.javaandroid.DSProxy;
-import com.embarcadero.javaandroid.DSRESTConnection;
+import static android.content.Context.WIFI_SERVICE;
 
-public class WifiManager extends SQLiteOpenHelper {
-    public static DSProxy.TSvrMethod method;
+public class WifiManager  {
 
-    private static final int VERSION = 2;
-    private static final String DBNAME = "db";
+    public boolean isWifiConnected(Context context ) {
 
-    private static final String TABLE = "tbl_autenticacao";
-    private static final String COL_ID = "id";
-    private static final String COL_IP = "ip";
-    private static final String COL_SSID = "ssid";
-    private static final String COL_PORT = "port";
-    private static final String COL_PASS = "password";
+        ConnectivityManager connManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-    public WifiManager(Context context) {
-        super(context, DBNAME, null, VERSION);
-    }
+        NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
+        return wifi.isConnected();
 
-        String sql =
-                "create table " + TABLE + "("
-                        + COL_ID + " integer primary key,"
-                        + COL_IP + " text, "
-                        + COL_SSID + " text, "
-                        + COL_PASS + " text, "
-                        + COL_PORT + " integer);";
-
-        db.execSQL(sql);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("drop table if exists " + TABLE);
-        onCreate(db);
     }
 
 
-    public void insertConfiguration(String ip, int port)
+    public boolean wifiConnect(Activity activity, String networkSSID, String networkPass)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
+        Context context = activity.getApplicationContext();
 
-        ContentValues values = new ContentValues();
-        values.put(COL_ID, 1);
-        values.put(COL_IP, ip);
-        values.put(COL_PORT, port);
+        /* Cria um objeto com os dados da conexão wifi do aparelho */
+        android.net.wifi.WifiManager wifiManager = (android.net.wifi.WifiManager) context.getSystemService(WIFI_SERVICE);
+        wifiManager.setWifiEnabled(true);
 
-        db.insert(TABLE, null, values);
-    }
+        /* Cria configuração do Wireless */
+        WifiConfiguration wifiConfig = new WifiConfiguration();
+        wifiConfig.SSID = "\"".concat(networkSSID).concat("\"");
+        wifiConfig.status = WifiConfiguration.Status.DISABLED;
+        wifiConfig.priority = 40;
 
-    public void saveWifi(String ip, int port)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
+        /* WPA/WPA2 Security */
+        wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+        wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+        wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+        wifiConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+        wifiConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+        wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+        wifiConfig.preSharedKey = "\"".concat(networkPass).concat("\"");
 
-        ContentValues values = new ContentValues();
-        values.put(COL_ID, 1);
-        values.put(COL_IP, ip);
-        values.put(COL_PORT, port);
+        /* Adiciona a rede Wireless */
+        int networkID = wifiManager.addNetwork(wifiConfig);
 
-        db.insert(TABLE, null, values);
-    }
 
-    public void updateConfiguration(String ip, int port)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
+        /* Conecta a rede Wireless, caso falhe, exibe uma mensagem de erro. */
+        if( wifiManager.enableNetwork(networkID, true)) {
+            Toast.makeText(context, "Conectando...", Toast.LENGTH_SHORT).show();
+            return true;
 
-        ContentValues values = new ContentValues();
-        values.put( COL_IP, ip );
-        values.put( COL_PORT, port );
-
-        String[] args = {String.valueOf(1)};
-
-        db.update(TABLE, values,COL_ID + "=?", args);
-
-        connect(ip, port);
-
-        Log.d("DbManager", "Update Success");
-    }
-
-    public NetworkConfiguration getConfiguration()
-    {
-        String[] id = new String[]{String.valueOf(1)};
-        SQLiteDatabase db = this.getReadableDatabase();
-        String[] columns = new String[]{COL_ID, COL_IP, COL_PORT, COL_SSID};
-
-        Cursor cursor = db.query(TABLE, columns, COL_ID + "=?", id,
-                                null, null, null, null);
-
-        NetworkConfiguration network = new NetworkConfiguration();
-
-        if (cursor.moveToFirst())
-        {
-            network.setId(cursor.getInt(cursor.getColumnIndex(COL_ID)));
-            network.setIp(cursor.getString(cursor.getColumnIndex(COL_IP)));
-            network.setPort(cursor.getInt(cursor.getColumnIndex(COL_PORT)));
-            network.setSsid(cursor.getString(cursor.getColumnIndex(COL_SSID)));
+        } else {
+            Toast.makeText(context, "Erro ao conectar", Toast.LENGTH_SHORT).show();
+            return false;
         }
 
-        connect(network.getIp(), network.getPort());
-        return network;
-    }
-
-    private void connect(String ip, int port) {
-
-        ConnectionFactory.sIp = ip;
-        ConnectionFactory.sPorta = port;
-
-        DSRESTConnection conn = ConnectionFactory.getConnection();
-        method = new DSProxy.TSvrMethod(conn);
-    }
-
-    public void delete() {
-        String[] id = new String[]{String.valueOf(1)};
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        db.delete(TABLE, COL_ID + "=?", id);
     }
 
 }

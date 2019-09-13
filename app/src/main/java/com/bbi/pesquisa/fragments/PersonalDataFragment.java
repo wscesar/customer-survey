@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bbi.pesquisa.R;
@@ -109,8 +110,7 @@ public class PersonalDataFragment extends Fragment {
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UIManager.hideModal(activity);
-                UIManager.saveData(activity, answer);
+                saveData();
             }
         });
 
@@ -143,7 +143,6 @@ public class PersonalDataFragment extends Fragment {
 
         UIManager.hideModal(activity);
     }
-
 
     private void getAnswers(){
         name = inputName.getText().toString().trim();
@@ -180,12 +179,21 @@ public class PersonalDataFragment extends Fragment {
         setFocusOn = validatedForm.getSetFocusOn();
 
         if ( readyToSave ) {
-            UIManager.saveData(getActivity(), answer);
+            saveData();
         }
 
         else {
             UIManager.showAlert(activity, alertLayout, message, changeButtons);
         }
+    }
+
+    private void saveData() {
+        LinearLayout layout = fragmentView.findViewById(R.id.layout);
+        ProgressBar progressBar = fragmentView.findViewById(R.id.progressBar);
+
+        UIManager.showProgressBar(layout, progressBar);
+        UIManager.hideModal(activity);
+        UIManager.saveData(activity, answer);
     }
 
 }

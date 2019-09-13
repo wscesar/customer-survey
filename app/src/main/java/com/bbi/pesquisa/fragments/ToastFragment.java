@@ -68,7 +68,7 @@ public class ToastFragment extends Fragment {
                 .getInstance(getActivity().getApplicationContext())
                 .registerReceiver(paramReceiver, new IntentFilter("ParamService"));
 
-        fragmentView = inflater.inflate(R.layout.fragment_message, container, false);
+        fragmentView = inflater.inflate(R.layout.message, container, false);
 
         bundle = getArguments();
         answer = (Answer) bundle.getSerializable("answer");
@@ -97,6 +97,7 @@ public class ToastFragment extends Fragment {
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UIManager.showProgressBar(layout, progressBar);
                 UIManager.saveData(getActivity(), answer);
             }
         });
