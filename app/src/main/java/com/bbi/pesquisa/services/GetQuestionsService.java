@@ -85,6 +85,7 @@ public class GetQuestionsService extends IntentService {
                 catch (Exception e)
                 {
                     Log.d("getQuestions", e.getMessage());
+                    System.exit(0);
                 }
 
             }
