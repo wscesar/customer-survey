@@ -36,7 +36,7 @@ public class UIManager {
         layout.setVisibility(View.GONE);
     }
 
-    public void hideProgressBar(ProgressBar progressBar) {
+    public void hideProgressBar(FrameLayout layout, ProgressBar progressBar) {
         progressBar.setVisibility(View.GONE);
     }
 

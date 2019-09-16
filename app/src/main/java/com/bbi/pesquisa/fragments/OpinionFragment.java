@@ -58,7 +58,7 @@ public class OpinionFragment extends Fragment {
         return fragmentView;
     }
 
-    private void saveCustomerOpinion(View view){
+    private void saveCustomerOpinion(View view) {
         uiManager.hideKeyboard(view);
 
         String customerOpinion = customerOpinionInput.getText().toString().trim();

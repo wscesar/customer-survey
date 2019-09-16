@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private View activityView;
     private boolean isLongPress = false;
 
-
-
     private UIManager uiManager;
     private NetworkManager networkManager;
     private NetworkConfiguration networkConfiguration;
@@ -46,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView logo;
     private ProgressBar progressBar;
-    private FrameLayout frameLayout;
+    private FrameLayout layout;
     private Button authButton, saveNetworkButton;
     private LinearLayout authForm, configForm, orderForm, logo_bbi;
     private EditText inputOrderId, inputIp, inputPort, inputSsid, inputPass, authPassword;
@@ -77,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
             if ( bitmap != null ){
                 logo.setImageBitmap(bitmap);
-                uiManager.hideProgressBar(progressBar);
+                uiManager.hideProgressBar(layout, progressBar);
                 showContent();
             } else {
                 uiManager.showModal(configForm);
@@ -118,12 +116,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         initGlobalVars();
-        uiManager.showProgressBar(frameLayout, progressBar);
+        uiManager.showProgressBar(layout, progressBar);
 
         if ( !isConnected() || networkConfiguration != null && networkConfiguration.getId() != 1 ) {
             uiManager.showModal(configForm);
             displayNetworkConfiguration();
-            frameLayout.setVisibility(View.GONE);
+            layout.setVisibility(View.GONE);
         } else {
             getLogo();
         }
@@ -172,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         uiManager = new UIManager(MainActivity.this);
         wifiManager = new WifiManager(context);
 
-        frameLayout = findViewById(R.id.frameLayout);
+        layout = findViewById(R.id.frameLayout);
         progressBar = findViewById(R.id.progressBar);
 
         logo = findViewById(R.id.logo);
@@ -239,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
     private void verifyConnection() {
 
         uiManager.hideModal(activityView);
-        uiManager.showProgressBar(frameLayout, progressBar);
+        uiManager.showProgressBar(layout, progressBar);
 
         new android.os.Handler().postDelayed( new Runnable() {
             public void run() {
@@ -247,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                     getLogo();
                 } else {
                     uiManager.toast("Erro ao Conectar!");
-                    uiManager.hideProgressBar(progressBar);
+                    uiManager.hideProgressBar(layout, progressBar);
                     uiManager.showModal(configForm);
                 }
 
@@ -261,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showContent() {
         uiManager.toast("Conectado!");
-        frameLayout.setVisibility(View.VISIBLE);
+        layout.setVisibility(View.VISIBLE);
     }
 
     private void getFragment(Fragment fragment) {

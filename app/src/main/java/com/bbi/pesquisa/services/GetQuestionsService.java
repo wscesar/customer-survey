@@ -79,14 +79,17 @@ public class GetQuestionsService extends IntentService {
 
                     } // end while getPerguntas()
 
-                    sendQuestions(questionList);
+
 
                 }
                 catch (Exception e)
                 {
                     Log.d("getQuestions", e.getMessage());
-                    //System.exit(0);
+                    questionList = null;
+//                    System.exit(0);
                 }
+
+                sendQuestions(questionList);
 
             }
         }

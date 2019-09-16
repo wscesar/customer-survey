@@ -34,24 +34,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SurveyFragment extends Fragment {
-    private Answer answer = new Answer();
-
+    private Answer answer;
     private Bundle bundle;
+    private UIManager uiManager;
 
     private List<Question> questionList = new ArrayList<>();
     private List<Alternative> alternativeList = new ArrayList<>();
-
-    private Button nextButton;
-    private RadioGroup rGroup;
-    private LinearLayout layout;
-
-    private int position = 0;
-    private int total;
-
-    private ProgressBar progressBar;
     private QuestionManager questionManager = new QuestionManager();
 
     private View fragmentView;
+    private Button nextButton;
+    private RadioGroup rGroup;
+    private LinearLayout layout;
+    private ProgressBar progressBar;
+
+    private int total;
+    private int position = 0;
 
     private boolean mountQuestionList = true;
 
@@ -70,9 +68,15 @@ public class SurveyFragment extends Fragment {
             if ( questionList.size() > 0 && mountQuestionList)
             {
                 questionManager.showQuestion(0, questionList, getActivity());
-                new UIManager(getActivity()).hideProgressBar(layout, progressBar);
-
+                uiManager.hideProgressBar(layout, progressBar);
                 mountQuestionList = false;
+            }
+
+            else if( questionList == null )
+            {
+                LinearLayout configForm = getActivity().findViewById(R.id.configForm);
+                uiManager.showModal(configForm);
+                getFragment(new FirstFragment());
             }
         }
     };
@@ -82,25 +86,19 @@ public class SurveyFragment extends Fragment {
     {
         fragmentView = inflater.inflate(R.layout.fragment_survey, container, false);
 
+        GetQuestionsService service = new GetQuestionsService();
+        service.start(getContext());
+
+        initGlobalVars();
+
         if ( mountQuestionList ) {
             LocalBroadcastManager
                     .getInstance(getContext())
                     .registerReceiver(questionReceiver, new IntentFilter("ServiceMessage3"));
         }
 
-        rGroup      = fragmentView.findViewById(R.id.rGroup);
-        layout      =  fragmentView.findViewById(R.id.layout);
-        progressBar = fragmentView.findViewById(R.id.progressBar);
+        uiManager.showProgressBar(layout, progressBar);
 
-        new UIManager(getActivity()).showProgressBar(layout, progressBar);
-
-        bundle = getArguments();
-        answer = (Answer) bundle.getSerializable("answer");
-
-        GetQuestionsService service = new GetQuestionsService();
-        service.start(getContext());
-
-        nextButton = fragmentView.findViewById(R.id.nextButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
@@ -110,6 +108,17 @@ public class SurveyFragment extends Fragment {
         });
 
         return fragmentView;
+    }
+
+    private void initGlobalVars() {
+        uiManager = new UIManager(getActivity());
+        rGroup      = fragmentView.findViewById(R.id.rGroup);
+        layout      = fragmentView.findViewById(R.id.layout);
+        nextButton  = fragmentView.findViewById(R.id.nextButton);
+        progressBar = fragmentView.findViewById(R.id.progressBar);
+
+        bundle = getArguments();
+        answer = (Answer) bundle.getSerializable("answer");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

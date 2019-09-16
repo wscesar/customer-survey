@@ -5,28 +5,32 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
+import com.bbi.pesquisa.util.UIManager;
 
 public class FirstFragment extends Fragment {
+    private UIManager uiManager;
     private Bundle bundle = new Bundle();
     private Answer answer = new Answer();
+    private Button yesButton, noButton, saveOrderId;
+
+    private LinearLayout layout;
+    private ProgressBar progressBar;
 
     private TextView message;
 
-    private LinearLayout modal;
-    private LinearLayout orderForm;
-    private LinearLayout configForm;
+    private View fragmentView;
+
 
     private EditText inputOrderId;
-
-    private InputMethodManager inputManager;
 
     public FirstFragment() {
         // Required empty public constructor
@@ -35,47 +39,52 @@ public class FirstFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View fragmentView = inflater.inflate(R.layout.message, container, false);
+        fragmentView = inflater.inflate(R.layout.message, container, false);
 
-        message = fragmentView.findViewById(R.id.message);
-        message.setText(R.string.welcome);
+        initGlobalVars();
 
-        modal = getActivity().findViewById(R.id.modal);
-        orderForm = getActivity().findViewById(R.id.orderForm);
-        configForm = getActivity().findViewById(R.id.configForm);
-
-        inputOrderId = getActivity().findViewById(R.id.orderId);
-
-        inputManager = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
-
-        Button yesButton = fragmentView.findViewById(R.id.yesButton);
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveOrderId();
+                setOrderId();
             }
         });
 
-        Button noButton = fragmentView.findViewById(R.id.noButton);
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getFragment(new LastFragment());
+                setThanksMessage();
             }
         });
 
-        Button saveOrderId = getActivity().findViewById(R.id.saveOrderId);
         saveOrderId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hideModal(view);
+                uiManager.hideModal(view);
             }
         });
 
         return fragmentView;
     }
 
-    private void saveOrderId() {
+    private void initGlobalVars() {
+        uiManager = new UIManager(getActivity());
+
+        layout = fragmentView.findViewById(R.id.layout);
+        progressBar = fragmentView.findViewById(R.id.progressBar);
+
+        message = fragmentView.findViewById(R.id.message);
+        message.setText(R.string.welcome);
+
+        yesButton = fragmentView.findViewById(R.id.yesButton);
+        noButton  = fragmentView.findViewById(R.id.noButton);
+        saveOrderId = getActivity().findViewById(R.id.saveOrderId);
+
+        inputOrderId = getActivity().findViewById(R.id.orderId);
+    }
+
+    private void setOrderId() {
+
         String orderId = inputOrderId.getText().toString().trim();
 
         if ( orderId.equals("") )
@@ -83,29 +92,30 @@ public class FirstFragment extends Fragment {
 
         answer.setOrderId(orderId);
 
-        setBundle(new SurveyFragment());
+        bundle.putSerializable("answer", answer);
+
+        Fragment fragment = new SurveyFragment();
+
+        fragment.setArguments(bundle);
+
+        getFragment(fragment);
     }
 
-    private void setBundle(Fragment fragment) {
-        bundle.putSerializable("answer", answer);
+    private void setThanksMessage() {
+        bundle.putString("message", "Obrigado");
+
+        Fragment fragment = new LastFragment();
         fragment.setArguments(bundle);
         getFragment(fragment);
     }
 
     private void getFragment(Fragment fragment) {
+//        uiManager.showProgressBar(layout, progressBar);
         inputOrderId.setText("");
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace( R.id.frameLayout, fragment )
                 .commit();
-    }
-
-    private void hideModal(View view) {
-        modal.setVisibility(View.GONE);
-        orderForm.setVisibility(View.GONE);
-        configForm.setVisibility(View.GONE);
-
-        inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     public void setMessage(String value) {

@@ -108,12 +108,14 @@ public class ToastFragment extends Fragment {
     }
 
     private void goToForm() {
+        uiManager.showProgressBar(layout, progressBar);
         PersonalDataFragment fragment = new PersonalDataFragment();
         fragment.setArguments(bundle);
         getFragment(fragment);
     }
 
     private void getFragment(Fragment fragment) {
+        uiManager.showProgressBar(layout, progressBar);
         getFragmentManager()
                 .beginTransaction()
                 .replace( R.id.frameLayout, fragment )
