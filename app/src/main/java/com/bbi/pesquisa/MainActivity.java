@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private View activityView;
     private boolean isLongPress = false;
 
+
+
     private UIManager uiManager;
     private NetworkManager networkManager;
     private NetworkConfiguration networkConfiguration;
@@ -53,10 +55,17 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver idReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int surveyId  = intent.getIntExtra("surveyId", 0);
+            int surveyId = intent.getIntExtra("surveyId", 0);
+            String message = intent.getStringExtra("message");
+
+            Bundle bundle = new Bundle();
+            bundle.putString("message", message);
+
+            Fragment fragment = new LastFragment();
+            fragment.setArguments(bundle);
 
             if ( surveyId > 0 )
-                getFragment(new LastFragment());
+                getFragment(fragment);
         }
     };
 
@@ -108,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-
         initGlobalVars();
         uiManager.showProgressBar(frameLayout, progressBar);
 
@@ -119,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getLogo();
         }
-
 
         logo.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -151,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 saveNetworkConfiguration();
-
             }
         });
 
@@ -167,13 +173,13 @@ public class MainActivity extends AppCompatActivity {
         wifiManager = new WifiManager(context);
 
         frameLayout = findViewById(R.id.frameLayout);
+        progressBar = findViewById(R.id.progressBar);
 
-        logo        = findViewById(R.id.logo);
-
+        logo = findViewById(R.id.logo);
         logo_bbi = findViewById(R.id.footer);
         authButton = findViewById(R.id.authButton);
-        saveNetworkButton = findViewById(R.id.saveNetworkButton);
         authPassword = findViewById(R.id.authPassword);
+        saveNetworkButton = findViewById(R.id.saveNetworkButton);
 
         // init order form
         orderForm    = findViewById(R.id.orderForm);
@@ -186,8 +192,6 @@ public class MainActivity extends AppCompatActivity {
         inputPort  = findViewById(R.id.port);
         inputSsid  = findViewById(R.id.ssid);
         inputPass  = findViewById(R.id.pass);
-
-        progressBar = findViewById(R.id.progressBar);
 
         networkManager = new NetworkManager(this);
         networkConfiguration = networkManager.getConfiguration();

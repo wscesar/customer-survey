@@ -149,6 +149,6 @@ public class UIManager {
     }
 
     public void toast(String s) {
-        Toast.makeText(context, s, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
     }
 }

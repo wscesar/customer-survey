@@ -9,4 +9,5 @@
     <string name="hasToast">Reservamos um brinde para quem completar as informações de cadastro\n\nDeseja receber seu brinde?</string>
     <string name="noToast">Gostaria de cadastrar-se para receber nossas promocoes?</string>
     <string name="networkConfiguratationPassword">bbi123</string>
+    <string name="thanksMessage">Obrigado!!!\n\nSua opinião vai ajudar a melhorar nossos serviços.\n\nAvise o garçom para receber seu brinde</string>
 </resources>

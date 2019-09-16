@@ -28,27 +28,41 @@ public class LastFragment extends Fragment {
         progressBar.setVisibility(View.GONE);
 
         TextView title = getActivity().findViewById(R.id.title);
-        TextView message = fragmentView.findViewById(R.id.message);
+        TextView messagePlaceholder = fragmentView.findViewById(R.id.message);
         LinearLayout yesNoButtons = fragmentView.findViewById(R.id.yesNoButtons);
         Button finishButton = fragmentView.findViewById(R.id.finishButton);
 
         title.setText(R.string.app_name);
 
-        message.setText("Obrigado");
+        Bundle bundle = getArguments();
+        String message = bundle.getString("message");
+
+        messagePlaceholder.setText(message);
 
         yesNoButtons.setVisibility(View.GONE);
 
-        finishButton.setVisibility(View.VISIBLE);
-
-        finishButton.setOnClickListener(new View.OnClickListener() {
+        messagePlaceholder.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View view) {
+            public boolean onLongClick(View view) {
                 getFragmentManager()
                         .beginTransaction()
                         .replace( R.id.frameLayout, new FirstFragment() )
                         .commit();
+
+                return false;
             }
         });
+
+//        finishButton.setVisibility(View.GONE);
+//        finishButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                getFragmentManager()
+//                        .beginTransaction()
+//                        .replace( R.id.frameLayout, new FirstFragment() )
+//                        .commit();
+//            }
+//        });
 
         return fragmentView;
     }

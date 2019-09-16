@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Alternative;
 import com.bbi.pesquisa.model.Answer;
 import com.bbi.pesquisa.util.NetworkManager;
@@ -53,6 +54,7 @@ public class SaveDataService extends IntentService {
                 String birthday = answer.getBirthday();
                 String customerOpinion = answer.getCustomerOpinion();
                 String orderId = answer.getOrderId();
+                String message =  "Obrigado!!!";
 
                 if(name == null)
                     name = "";
@@ -71,6 +73,9 @@ public class SaveDataService extends IntentService {
 
                 if(customerOpinion == null)
                     customerOpinion = "";
+
+                if(!name.isEmpty() && !phone.isEmpty() && !email.isEmpty() && !city.isEmpty() )
+                    message = "Obrigado\n\nAvise o garçom para receber seu brinde";
 
 
                 int surveyId;
@@ -95,13 +100,13 @@ public class SaveDataService extends IntentService {
                     Log.e(ACTION, e.getMessage());
                 }
 
-                updateOrder(surveyId, Integer.parseInt(orderId), customerOpinion);
+                updateOrder(surveyId, Integer.parseInt(orderId), customerOpinion, message);
 
             }
         }
     }
 
-    private void updateOrder(int surveyId, int orderId, String customerOpinion) {
+    private void updateOrder(int surveyId, int orderId, String customerOpinion, String message) {
         if( surveyId > 0 )
         {
             try
@@ -122,12 +127,13 @@ public class SaveDataService extends IntentService {
             }
         }
 
-        sendSurveyId(surveyId);
+        sendSurveyId(surveyId, message);
     }
 
-    private void sendSurveyId(int surveyId) {
+    private void sendSurveyId(int surveyId, String message) {
         Intent intent = new Intent(ACTION);
         intent.putExtra("surveyId", surveyId);
+        intent.putExtra("message", message);
         LocalBroadcastManager
                 .getInstance(getApplicationContext())
                 .sendBroadcast(intent);
