@@ -21,7 +21,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.bbi.pesquisa.fragments.LastFragment;
 import com.bbi.pesquisa.fragments.FirstFragment;
@@ -35,6 +34,7 @@ import com.bbi.pesquisa.util.WifiManager;
 public class MainActivity extends AppCompatActivity {
 
     private Context context;
+    private View activityView;
     private boolean isLongPress = false;
 
     private UIManager uiManager;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private FrameLayout frameLayout;
     private Button authButton, saveNetworkButton;
-    private LinearLayout authForm, configForm, orderForm, modal, logo_bbi;
+    private LinearLayout authForm, configForm, orderForm, logo_bbi;
     private EditText inputOrderId, inputIp, inputPort, inputSsid, inputPass, authPassword;
 
 
@@ -70,6 +70,11 @@ public class MainActivity extends AppCompatActivity {
                 logo.setImageBitmap(bitmap);
                 uiManager.hideProgressBar(progressBar);
                 showContent();
+            } else {
+                uiManager.showModal(configForm);
+                displayNetworkConfiguration();
+                uiManager.toast("Erro ao conectar");
+
             }
         }
     };
@@ -103,9 +108,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-        initGlobalVars();
 
-        if ( !isConnected() || networkConfiguration != null && networkConfiguration.getId() != 1) {
+        initGlobalVars();
+        uiManager.showProgressBar(frameLayout, progressBar);
+
+        if ( !isConnected() || networkConfiguration != null && networkConfiguration.getId() != 1 ) {
             uiManager.showModal(configForm);
             displayNetworkConfiguration();
             frameLayout.setVisibility(View.GONE);
@@ -119,14 +126,6 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 longClick(event, "showOrderForm");
                 return true;
-            }
-        });
-
-
-        modal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                uiManager.hideModal(view);
             }
         });
 
@@ -152,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 saveNetworkConfiguration();
-                uiManager.hideModal(view);
+
             }
         });
 
@@ -162,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initGlobalVars() {
         context = getApplicationContext();
-
+        activityView = findViewById(R.id.mainActivity);
 
         uiManager = new UIManager(MainActivity.this);
         wifiManager = new WifiManager(context);
@@ -171,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
 
         logo        = findViewById(R.id.logo);
 
-        modal = findViewById(R.id.modal);
         logo_bbi = findViewById(R.id.footer);
         authButton = findViewById(R.id.authButton);
         saveNetworkButton = findViewById(R.id.saveNetworkButton);
@@ -196,17 +194,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void authUser(View view) {
-        EditText authPassword = findViewById(R.id.authPassword);
         uiManager.showFocusOn(authPassword);
-
         displayNetworkConfiguration();
 
-        if ( authPassword.getText().toString().trim().equals("") )
+        if ( authPassword.getText().toString().trim().equals("foodbbi") )
             uiManager.showModal(configForm);
-        else
+        else {
             uiManager.hideModal(view);
+            uiManager.toast("Senha incorreta");
+        }
 
-        authPassword.setText(R.string.networkConfiguratationPassword);
     }
 
     private void displayNetworkConfiguration() {
@@ -237,14 +234,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void verifyConnection() {
 
-        uiManager.showProgressBar(progressBar);
+        uiManager.hideModal(activityView);
+        uiManager.showProgressBar(frameLayout, progressBar);
 
         new android.os.Handler().postDelayed( new Runnable() {
             public void run() {
                 if ( isConnected() ) {
                     getLogo();
                 } else {
-                    Toast.makeText(context, "Erro ao Conectar!", Toast.LENGTH_SHORT).show();
+                    uiManager.toast("Erro ao Conectar!");
                     uiManager.hideProgressBar(progressBar);
                     uiManager.showModal(configForm);
                 }
@@ -258,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showContent() {
-        Toast.makeText(context, "Conectado!", Toast.LENGTH_SHORT).show();
+        uiManager.toast("Conectado!");
         frameLayout.setVisibility(View.VISIBLE);
     }
 
@@ -302,3 +300,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 } //end Activity
+
+
+
+

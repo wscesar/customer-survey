@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bbi.pesquisa.R;
 import com.bbi.pesquisa.model.Answer;
@@ -18,17 +20,20 @@ public class UIManager {
 
     private Activity activity;
     private Context context;
+    private View contextView;
     private LinearLayout modal;
 
     public UIManager(Activity activity) {
         this.activity = activity;
         this.context = activity.getApplicationContext();
+        this.contextView = activity.findViewById(R.id.mainActivity);
         this.modal = activity.findViewById(R.id.modal);
     }
 
 
-    public void showProgressBar(ProgressBar progressBar) {
+    public void showProgressBar(FrameLayout layout, ProgressBar progressBar) {
         progressBar.setVisibility(View.VISIBLE);
+        layout.setVisibility(View.GONE);
     }
 
     public void hideProgressBar(ProgressBar progressBar) {
@@ -141,5 +146,9 @@ public class UIManager {
         configForm.setVisibility(View.GONE);
         alertLayout.setVisibility(View.GONE);
         birthdayPicker.setVisibility(View.GONE);
+    }
+
+    public void toast(String s) {
+        Toast.makeText(context, s, Toast.LENGTH_LONG).show();
     }
 }
