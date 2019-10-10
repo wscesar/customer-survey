@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout authForm, configForm, orderForm, logo_bbi;
     private EditText inputOrderId, inputIp, inputPort, inputSsid, inputPass, authPassword;
 
-
     private BroadcastReceiver idReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -71,17 +70,16 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver bitmapReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+//            showContent();
             Bitmap bitmap = intent.getParcelableExtra("bitmap");
-
-            if ( bitmap != null ){
+            if ( bitmap != null ) {
                 logo.setImageBitmap(bitmap);
                 uiManager.hideProgressBar(layout, progressBar);
                 showContent();
             } else {
                 uiManager.showModal(configForm);
                 displayNetworkConfiguration();
-                uiManager.toast("Erro ao conectar");
-
+                uiManager.toast("Tempo de conexão esgotado");
             }
         }
     };
@@ -118,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         initGlobalVars();
         uiManager.showProgressBar(layout, progressBar);
 
-        if ( !isConnected() || networkConfiguration != null && networkConfiguration.getId() != 1 ) {
+        if ( !isWifiConnected() || networkConfiguration != null && networkConfiguration.getId() != 1 ) {
             uiManager.showModal(configForm);
             displayNetworkConfiguration();
             layout.setVisibility(View.GONE);
@@ -241,10 +239,10 @@ public class MainActivity extends AppCompatActivity {
 
         new android.os.Handler().postDelayed( new Runnable() {
             public void run() {
-                if ( isConnected() ) {
+                if ( isWifiConnected() ) {
                     getLogo();
                 } else {
-                    uiManager.toast("Erro ao Conectar!");
+                    uiManager.toast("Erro ao Conectar Wifi!!!");
                     uiManager.hideProgressBar(layout, progressBar);
                     uiManager.showModal(configForm);
                 }
@@ -253,12 +251,12 @@ public class MainActivity extends AppCompatActivity {
         },3000);
     }
 
-    private boolean isConnected() {
+    private boolean isWifiConnected() {
         return wifiManager.isWifiConnected(context);
     }
 
     private void showContent() {
-        uiManager.toast("Conectado!");
+//        uiManager.toast("Conectado!");
         layout.setVisibility(View.VISIBLE);
     }
 

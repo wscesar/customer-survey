@@ -72,12 +72,12 @@ public class SurveyFragment extends Fragment {
                 mountQuestionList = false;
             }
 
-            else if( questionList == null )
-            {
-                LinearLayout configForm = getActivity().findViewById(R.id.configForm);
-                uiManager.showModal(configForm);
-                getFragment(new FirstFragment());
-            }
+//            else if( questionList == null )
+//            {
+//                LinearLayout configForm = getActivity().findViewById(R.id.configForm);
+//                uiManager.showModal(configForm);
+//                getFragment(new FirstFragment());
+//            }
         }
     };
 

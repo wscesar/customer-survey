@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -54,7 +55,7 @@ public class GetQuestionsService extends IntentService {
                         question.setId(idPergunta);
                         question.setQuestion(pergunta);
 
-                        Log.d("instentService", question.getQuestion());
+                        Log.d(ACTION, question.getQuestion());
 
                         List<Alternative> alternativeListMaker = new ArrayList<>();
 
@@ -84,7 +85,8 @@ public class GetQuestionsService extends IntentService {
                 }
                 catch (Exception e)
                 {
-                    Log.d("getQuestions", e.getMessage());
+                    Log.e(ACTION, e.getMessage());
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     questionList = null;
 //                    System.exit(0);
                 }

@@ -102,6 +102,14 @@ public class NetworkManager extends SQLiteOpenHelper {
             network.setSsid(cursor.getString(cursor.getColumnIndex(COL_SSID)));
             network.setPass(cursor.getString(cursor.getColumnIndex(COL_PASS)));
         }
+        else
+        {
+            network.setId(1);
+            network.setIp("192.168.0.224");
+            network.setPort(3080);
+            network.setSsid("BITBYTE");
+            network.setPass("comfoodbbi13");
+        }
 
         connect(network.getIp(), network.getPort());
         return network;

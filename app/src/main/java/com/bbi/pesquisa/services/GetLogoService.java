@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -44,6 +45,7 @@ public class GetLogoService extends IntentService {
                 try
                 {
                     String imageString = NetworkManager.method.ImageToBase64("//Pesquisa//logo_cliente.png", true);
+                    Log.d(ACTION, imageString );
 
                     byte[] byteArray = Base64.decode(imageString);
                     bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
@@ -59,13 +61,12 @@ public class GetLogoService extends IntentService {
                 }
                 catch ( Exception e )
                 {
-                    Log.d("getLogoError", e.getMessage() );
+                    Log.e(ACTION, e.getMessage() );
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
                 sendBitmap(bitmap);
             }
-
-
         }
     }
 

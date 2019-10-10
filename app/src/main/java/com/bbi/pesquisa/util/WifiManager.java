@@ -52,9 +52,9 @@ public class WifiManager  {
         int networkID = wifiManager.addNetwork(wifiConfig);
 
         if( wifiManager.enableNetwork(networkID, true))
-            Toast.makeText(context, "Conectando...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Buscando rede...", Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(context, "Erro ao conectar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Erro ao Conectar Wifi", Toast.LENGTH_SHORT).show();
 
     }
 
